@@ -48,7 +48,7 @@ tailwind.config = {
   @media print { nav { display:none; } }
 </style>
 </head>
-<body class="font-sans text-ink antialiased">
+<body class="font-sans text-ink antialiased overflow-x-hidden">
 
 <!-- ======================= NAV ======================= -->
 <nav class="sticky top-0 z-40 border-b border-sand-200 bg-white/85 backdrop-blur">
@@ -98,6 +98,20 @@ tailwind.config = {
       <div class="kpi p-4"><p class="text-xs text-gold">المساعد</p><p class="mt-1 font-bold">يقرّر وينادي دوالنا</p></div>
       <div class="kpi p-4"><p class="text-xs text-gold">الدفع</p><p class="mt-1 font-bold">عند الاستلام 💰</p></div>
       <div class="kpi p-4"><p class="text-xs text-gold">الإدارة</p><p class="mt-1 font-bold">لوحة + تقارير</p></div>
+    </div>
+
+    <div class="mt-6 flex flex-wrap items-center justify-center gap-2 text-xs font-semibold text-white/90">
+      <span class="rounded-full border border-white/20 bg-white/10 px-3 py-1">React</span>
+      <span class="rounded-full border border-white/20 bg-white/10 px-3 py-1">TypeScript</span>
+      <span class="rounded-full border border-white/20 bg-white/10 px-3 py-1">Redux Toolkit</span>
+      <span class="rounded-full border border-white/20 bg-white/10 px-3 py-1">Node.js</span>
+      <span class="rounded-full border border-white/20 bg-white/10 px-3 py-1">Express</span>
+      <span class="rounded-full border border-white/20 bg-white/10 px-3 py-1">MongoDB</span>
+      <span class="rounded-full border border-white/20 bg-white/10 px-3 py-1">Tailwind CSS</span>
+      <span class="rounded-full border border-white/20 bg-white/10 px-3 py-1">Chart.js</span>
+      <span class="rounded-full border border-white/20 bg-white/10 px-3 py-1">ngrok</span>
+      <span class="rounded-full border border-white/20 bg-white/10 px-3 py-1">OpenRouter</span>
+      <span class="rounded-full border border-white/20 bg-white/10 px-3 py-1">WhatsApp Cloud API</span>
     </div>
   </div>
 </header>
@@ -169,9 +183,9 @@ tailwind.config = {
 <section id="arch">
   <p class="text-xs font-bold uppercase tracking-widest text-brand">٤ · البنية</p>
   <h2 class="mt-1 text-3xl font-black">المساعد يقرّر، والكود ينفّذ — وكل حاجة على جهاز المطعم</h2>
-  <p class="mt-2 max-w-3xl text-muted">المساعد الذكي (LLM) بيفكّر ويقرّر لكل رسالة، والكود هو اللي يتحقق وينفّذ ويكتب البيانات. وكل حاجة شغّالة على جهاز المطعم نفسه (Node + Express + MongoDB)، وواتساب بيوصله عن طريق نفق آمن — من غير سيرفر شهري.</p>
+  <p class="mt-2 max-w-3xl text-muted">المساعد الذكي (LLM) بيفكّر ويقرّر لكل رسالة، والكود هو اللي يتحقق وينفّذ ويكتب البيانات. الواجهة React + TypeScript (Redux Toolkit)، والباك إند Node + TypeScript + Express، والقاعدة MongoDB — كلهم شغّالين على جهاز المطعم نفسه، وواتساب بيوصله عن طريق نفق ngrok — من غير سيرفر شهري.</p>
 
-  <div class="mt-6 card p-4">
+  <div class="mt-6 card overflow-x-auto p-4">
     <svg viewBox="0 0 1000 440" class="mx-auto h-auto w-full min-w-[760px] max-w-5xl" role="img" aria-label="رسم البنية">
       <defs>
         <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#6E5A55"/></marker>
@@ -191,7 +205,7 @@ tailwind.config = {
       <rect x="382" y="70" width="130" height="38" rx="10" fill="#FCEFD6" stroke="#D99A3C"/>
       <text x="447" y="94" text-anchor="middle" font-size="12" font-weight="700" fill="#B87F28">نفق ngrok</text>
       <rect x="530" y="70" width="308" height="38" rx="10" fill="#F0F0F0" stroke="#6E5A55"/>
-      <text x="684" y="94" text-anchor="middle" font-size="12" font-weight="700" fill="#1F1414">Node + Express API</text>
+      <text x="684" y="94" text-anchor="middle" font-size="12" font-weight="700" fill="#1F1414">Node (TS) + Express API</text>
 
       <rect x="382" y="126" width="456" height="196" rx="12" fill="#fff" stroke="#B01414"/>
       <text x="398" y="145" font-size="12" font-weight="700" fill="#8F0F0F">المساعد الذكي + الكود</text>
@@ -237,6 +251,7 @@ tailwind.config = {
       <line x1="610" y1="316" x2="610" y2="348" stroke="#6E5A55" stroke-width="1.5" marker-end="url(#ar)"/>
     </svg>
     <p class="px-2 pb-2 text-xs text-muted">المساعد الذكي (عبر OpenRouter) بيقرّر لكل رسالة: يرد مباشرة أو ينادي دوالنا كأدوات، وكل الأرقام والقرارات بتتحسب جوه دوالنا على جهاز المطعم — من غير كتالوج ميتا.</p>
+    <p class="mt-1 px-2 text-center text-xs font-bold text-muted md:hidden">↔ اسحب يمين/شمال لرؤية الرسم كامل</p>
   </div>
 
   <div class="mt-4 rounded-2xl border-2 border-gold bg-gold-100 p-5">
@@ -252,8 +267,26 @@ tailwind.config = {
   <div class="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
     <div class="card p-5"><h3 class="font-bold text-brand">المساعد يقرّر</h3><p class="mt-1 text-sm text-muted">لكل رسالة، المساعد يقرّر لوحده: يرد عادي من غير أدوات، ولا ينادي أداة لتنفيذ إجراء.</p></div>
     <div class="card p-5"><h3 class="font-bold text-brand">الكود ينفّذ</h3><p class="mt-1 text-sm text-muted">مفيش سعر أو صنف أو تعديل بيتكتب من الموديل — الكود وحده يتحقق ويكتب في القاعدة.</p></div>
-    <div class="card p-5"><h3 class="font-bold text-brand">التشغيل محلي</h3><p class="mt-1 text-sm text-muted">MongoDB والقاعدة والأوردرات كلها على جهاز المطعم — أسرع وبدون تكلفة شهرية.</p></div>
+    <div class="card p-5"><h3 class="font-bold text-brand">التشغيل محلي</h3><p class="mt-1 text-sm text-muted">لوحة React والقاعدة MongoDB والأوردرات كلها على جهاز المطعم — أسرع وبدون تكلفة شهرية.</p></div>
     <div class="card p-5"><h3 class="font-bold text-brand">نفق آمن</h3><p class="mt-1 text-sm text-muted">ngrok بيعمل رابط HTTPS للمطعم، وميتا بتبعت الويب هوك عليه من غير ما نفتح بورتات.</p></div>
+  </div>
+
+  <div class="mt-6 card p-5">
+    <h3 class="font-bold text-brand">التقنيات اللي بنينا بيها</h3>
+    <div class="mt-3 flex flex-wrap gap-2 text-xs font-semibold">
+      <span class="rounded-full border border-sand-200 bg-sand-50 px-3 py-1">React</span>
+      <span class="rounded-full border border-sand-200 bg-sand-50 px-3 py-1">TypeScript</span>
+      <span class="rounded-full border border-sand-200 bg-sand-50 px-3 py-1">Redux Toolkit</span>
+      <span class="rounded-full border border-sand-200 bg-sand-50 px-3 py-1">Node.js</span>
+      <span class="rounded-full border border-sand-200 bg-sand-50 px-3 py-1">Express</span>
+      <span class="rounded-full border border-sand-200 bg-sand-50 px-3 py-1">MongoDB</span>
+      <span class="rounded-full border border-sand-200 bg-sand-50 px-3 py-1">Tailwind CSS</span>
+      <span class="rounded-full border border-sand-200 bg-sand-50 px-3 py-1">Chart.js</span>
+      <span class="rounded-full border border-sand-200 bg-sand-50 px-3 py-1">ngrok</span>
+      <span class="rounded-full border border-sand-200 bg-sand-50 px-3 py-1">OpenRouter</span>
+      <span class="rounded-full border border-sand-200 bg-sand-50 px-3 py-1">WhatsApp Cloud API</span>
+    </div>
+    <p class="mt-3 text-xs text-muted">الواجهة React + TypeScript (+ Redux Toolkit)، والباك إند Node + TypeScript + Express، والقاعدة MongoDB — كلهم على جهاز المطعم.</p>
   </div>
 </section>
 

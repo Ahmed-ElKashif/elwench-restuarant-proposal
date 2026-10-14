@@ -15,6 +15,8 @@ to operate a schema-migration pipeline. The Menu is naturally a document
 
 Use **Node + Express + MongoDB (Mongoose)**.
 
+- The dashboard is a **React + TypeScript** SPA (state via **Redux Toolkit**);
+  the API stays **Node + TypeScript + Express**.
 - Orders embed their `order_lines`.
 - The Menu and Recommendations are seeded from the restaurant's source file
   (`menu.js`) into the `menu` collection.
