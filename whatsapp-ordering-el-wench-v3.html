@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>الونش · مساعد الأوردرات على واتساب</title>
+<link rel="icon" href="logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        brand: { DEFAULT: '#B01414', 600: '#C21818', 700: '#8F0F0F', 800: '#6E0B0B', 50: '#FDECEC', 100: '#F9D5D5' },
+        gold:  { DEFAULT: '#F0B050', 600: '#D99A3C', 100: '#FCEFD6', 700: '#B87F28' },
+        sand:  { DEFAULT: '#F0F0F0', 50: '#FAF7F3', 100: '#F4EFE9', 200: '#E7DFD6' },
+        ink:   { DEFAULT: '#1F1414', 700: '#3A2A26' },
+        muted: '#6E5A55'
+      },
+      fontFamily: { sans: ['Cairo', 'system-ui', 'Segoe UI', 'sans-serif'] },
+      boxShadow: { soft: '0 10px 30px -12px rgba(31,20,20,.18)' }
+    }
+  }
+}
+</script>
+<style>
+  html { scroll-behavior: smooth; scroll-padding-top: 5rem; }
+  body { background: #FAF7F3; }
+  .chat-scroll { scrollbar-width: thin; scrollbar-color: #d9c7b8 transparent; }
+  .chat-scroll::-webkit-scrollbar { width: 8px; }
+  .chat-scroll::-webkit-scrollbar-thumb { background: #ddcdbe; border-radius: 99px; }
+  .bubble-in  { border-top-left-radius: 4px; }
+  .bubble-out { border-top-right-radius: 4px; }
+  .card { background:#fff; border:1px solid #ECE4DB; border-radius:1.25rem; box-shadow:0 10px 30px -18px rgba(31,20,20,.35); }
+  .chip { border-radius:999px; }
+  .grad-red { background: radial-gradient(120% 120% at 100% 0%, #C21818 0%, #8F0F0F 55%, #6E0B0B 100%); }
+  .grad-gold { background: linear-gradient(135deg, #F7C766, #D99A3C); }
+  .kpi { background: rgba(255,255,255,.10); border:1px solid rgba(255,255,255,.18); border-radius:1rem; }
+  details > summary { cursor:pointer; list-style:none; }
+  details > summary::-webkit-details-marker { display:none; }
+  .step-dot { width:2.25rem; height:2.25rem; }
+  svg text { font-family: Cairo, system-ui, sans-serif; }
+  nav a[href^="#"].is-active { background:#B01414; color:#fff; }
+  @media print { nav { display:none; } }
+</style>
+</head>
+<body class="font-sans text-ink antialiased">
+
+<!-- ======================= NAV ======================= -->
+<nav class="sticky top-0 z-40 border-b border-sand-200 bg-white/85 backdrop-blur">
+  <div class="mx-auto flex max-w-7xl items-center gap-2 overflow-x-auto px-4 py-3 text-sm">
+    <img src="logo.jpg" alt="الونش" class="h-9 w-9 shrink-0 rounded-full ring-2 ring-brand/20">
+    <span class="shrink-0 font-extrabold text-brand">الونش<span class="text-gold-600"> ·</span></span>
+    <a class="shrink-0 rounded-full px-3 py-1 text-ink/70 hover:bg-brand-50 hover:text-brand" href="#idea">الفكرة</a>
+    <a class="shrink-0 rounded-full px-3 py-1 text-ink/70 hover:bg-brand-50 hover:text-brand" href="#flow">طريقة الطلب</a>
+    <a class="shrink-0 rounded-full px-3 py-1 text-ink/70 hover:bg-brand-50 hover:text-brand" href="#states">مراحل الطلب</a>
+    <a class="shrink-0 rounded-full px-3 py-1 text-ink/70 hover:bg-brand-50 hover:text-brand" href="#arch">البنية</a>
+    <a class="shrink-0 rounded-full px-3 py-1 text-ink/70 hover:bg-brand-50 hover:text-brand" href="#ai">المساعد الذكي</a>
+    <a class="shrink-0 rounded-full px-3 py-1 text-ink/70 hover:bg-brand-50 hover:text-brand" href="#safety">الأمان</a>
+    <a class="shrink-0 rounded-full px-3 py-1 text-ink/70 hover:bg-brand-50 hover:text-brand" href="#checkout">الدفع عند الاستلام</a>
+    <a class="shrink-0 rounded-full px-3 py-1 text-ink/70 hover:bg-brand-50 hover:text-brand" href="#feedback">التقييم</a>
+    <a class="shrink-0 rounded-full px-3 py-1 text-ink/70 hover:bg-brand-50 hover:text-brand" href="#dashboard">لوحة الإدارة</a>
+    <a class="shrink-0 rounded-full px-3 py-1 text-ink/70 hover:bg-brand-50 hover:text-brand" href="#reports">التقارير</a>
+    <a class="shrink-0 rounded-full px-3 py-1 text-ink/70 hover:bg-brand-50 hover:text-brand" href="#cost">التكلفة</a>
+    <a class="shrink-0 rounded-full px-3 py-1 text-ink/70 hover:bg-brand-50 hover:text-brand" href="#demo">تجربة حيّة</a>
+  </div>
+</nav>
+
+<!-- ======================= HERO ======================= -->
+<header class="grad-red text-white">
+  <div class="mx-auto max-w-7xl px-4 py-14 md:py-20">
+    <div class="flex flex-col items-center gap-6 text-center md:flex-row md:items-center md:justify-between md:text-right">
+      <div class="order-2 md:order-1">
+        <span class="chip inline-flex items-center gap-2 border border-white/25 bg-white/10 px-3 py-1 text-xs font-semibold text-gold">
+          📄 عرض للعميل · النسخة ٣
+        </span>
+        <h1 class="mt-4 text-4xl font-black leading-tight md:text-6xl">
+          الونش<br><span class="text-gold">مساعد الأوردرات على واتساب</span>
+        </h1>
+        <p class="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-white/85 md:mx-0 md:text-lg">
+          العميل يطلب بالمصري في واتساب، مساعد ذكي يفهمه ويجهّز الأوردر ويقول له السعر والوقت،
+          والمطبخ يستلم الأوردر على لوحة إدارة. كل حاجة متسجلة، وبتقارير حلوة.
+        </p>
+        <p class="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-gold md:mx-0">
+          المساعد هو اللي يقرّر، وبينادي <b>دوالنا الجاهزة</b> كأدوات — وهي اللي بتحسب السعر والوقت،
+          <b>من غير أي كتالوج من ميتا</b>.
+        </p>
+      </div>
+      <img src="logo.jpg" alt="لوجو مطعم الونش" class="order-1 h-40 w-40 shrink-0 rounded-3xl ring-4 ring-white/20 md:order-2 md:h-52 md:w-52">
+    </div>
+
+    <div class="mt-10 grid grid-cols-2 gap-3 md:grid-cols-4">
+      <div class="kpi p-4"><p class="text-xs text-gold">القناة</p><p class="mt-1 font-bold">واتساب بالمصري</p></div>
+      <div class="kpi p-4"><p class="text-xs text-gold">المساعد</p><p class="mt-1 font-bold">يقرّر وينادي دوالنا</p></div>
+      <div class="kpi p-4"><p class="text-xs text-gold">الدفع</p><p class="mt-1 font-bold">عند الاستلام 💰</p></div>
+      <div class="kpi p-4"><p class="text-xs text-gold">الإدارة</p><p class="mt-1 font-bold">لوحة + تقارير</p></div>
+    </div>
+  </div>
+</header>
+
+<main class="mx-auto max-w-7xl space-y-16 px-4 py-14">
+
+<!-- ======================= IDEA ======================= -->
+<section id="idea">
+  <p class="text-xs font-bold uppercase tracking-widest text-brand">١ · الفكرة</p>
+  <h2 class="mt-1 text-3xl font-black">بنحسّن إيه في شغلنا اليومي؟</h2>
+  <p class="mt-2 max-w-3xl text-muted">أربع حاجات بسيطة بتفرق في الشغل اليومي:</p>
+
+  <div class="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+    <div class="card p-6">
+      <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand">💬</div>
+      <h3 class="mt-3 font-bold">مساعد ذكي يفهم المصري</h3>
+      <p class="mt-1 text-sm text-muted">بيسأل ويرد بالطبيعي، ويجهّز الأوردر خطوة خطوة من غير ما العميل يحس إنه بيتكلم مع روبوت.</p>
+    </div>
+    <div class="card p-6">
+      <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-gold-100 text-gold-700">📋</div>
+      <h3 class="mt-3 font-bold">الأوردر يوصل للمطبخ فوراً</h3>
+      <p class="mt-1 text-sm text-muted">الأدمن يشوف الأوردر، يأكده، وبعدها العميل يستلم رسالة إن الأوردر «جاري التحضير».</p>
+    </div>
+    <div class="card p-6">
+      <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand">💰</div>
+      <h3 class="mt-3 font-bold">دفع عند الاستلام</h3>
+      <p class="mt-1 text-sm text-muted">المساعد يقول سعر الأصناف + «التوصيل ودفع عند الاستلام». محدش بيدخل رقم التوصيل لا العميل ولا الأدمن.</p>
+    </div>
+    <div class="card p-6">
+      <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-gold-100 text-gold-700">📊</div>
+      <h3 class="mt-3 font-bold">تقارير وأرقام</h3>
+      <p class="mt-1 text-sm text-muted">كل أوردر محفوظ، وتقارير يوم / شهر / سنة برسم بياني واضح.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= FLOW ======================= -->
+<section id="flow">
+  <p class="text-xs font-bold uppercase tracking-widest text-brand">٢ · طريقة الطلب</p>
+  <h2 class="mt-1 text-3xl font-black">رحلة الأوردر خطوة بخطوة</h2>
+  <p class="mt-2 max-w-3xl text-muted">رحلة واحدة متتابعة، من أول «سلام» لحد رسالة التقييم: العميل يبدأ، المساعد يجهّز، والمطبخ ينفّذ.</p>
+
+  <div class="mt-7">
+    <div class="mb-5 flex flex-wrap items-center justify-center gap-2 text-xs font-bold">
+      <span class="rounded-full bg-brand px-3 py-1 text-white">العميل · واتساب</span>
+      <span class="rounded-full bg-ink px-3 py-1 text-white">المساعد · السيرفر</span>
+      <span class="rounded-full bg-gold-600 px-3 py-1 text-white">المطبخ · الإدارة</span>
+    </div>
+    <div id="flowChart" class="space-y-0"></div>
+  </div>
+</section>
+
+<!-- ======================= STATES ======================= -->
+<section id="states">
+  <p class="text-xs font-bold uppercase tracking-widest text-brand">٣ · مراحل الطلب</p>
+  <h2 class="mt-1 text-3xl font-black">الطلب بيمرّ بـ٥ مراحل بسيطة</h2>
+  <p class="mt-2 max-w-3xl text-muted">وضعنا مسار مختصر وواضح: من الطلب لحد التسليم، ورسالة «جاري التحضير» هي الوحيدة اللي بتوصل للعميل بعد ما الأدمن يأكد.</p>
+
+  <div class="mt-6 grid gap-3 md:grid-cols-5">
+    <div class="card p-5 text-center"><div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gold-100 text-2xl">🛒</div><p class="mt-3 font-bold">تم الطلب</p><p class="text-xs text-muted">العميل يأكد السلة</p></div>
+    <div class="card p-5 text-center"><div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-brand-50 text-2xl">⏳</div><p class="mt-3 font-bold">انتظار الإدارة</p><p class="text-xs text-muted">الأوردر على اللوحة</p></div>
+    <div class="card p-5 text-center ring-2 ring-brand"><div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-brand-50 text-2xl">🍳</div><p class="mt-3 font-bold text-brand">جاري التحضير</p><p class="text-xs text-muted">الأدمن أكّد + رسالة للعميل</p></div>
+    <div class="card p-5 text-center"><div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gold-100 text-2xl">🚚</div><p class="mt-3 font-bold">اتسلّم</p><p class="text-xs text-muted">خرج من المطبخ</p></div>
+    <div class="card p-5 text-center"><div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-brand-50 text-2xl">🌟</div><p class="mt-3 font-bold">التقييم</p><p class="text-xs text-muted">بعد ساعتين</p></div>
+  </div>
+</section>
+
+<!-- ======================= ARCH ======================= -->
+<section id="arch">
+  <p class="text-xs font-bold uppercase tracking-widest text-brand">٤ · البنية</p>
+  <h2 class="mt-1 text-3xl font-black">المساعد يقرّر، والكود ينفّذ — وكل حاجة على جهاز المطعم</h2>
+  <p class="mt-2 max-w-3xl text-muted">المساعد الذكي (LLM) بيفكّر ويقرّر لكل رسالة، والكود هو اللي يتحقق وينفّذ ويكتب البيانات. وكل حاجة شغّالة على جهاز المطعم نفسه (Node + Express + MongoDB)، وواتساب بيوصله عن طريق نفق آمن — من غير سيرفر شهري.</p>
+
+  <div class="mt-6 card p-4">
+    <svg viewBox="0 0 1000 440" class="mx-auto h-auto w-full min-w-[760px] max-w-5xl" role="img" aria-label="رسم البنية">
+      <defs>
+        <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#6E5A55"/></marker>
+      </defs>
+
+      <rect x="15" y="180" width="120" height="76" rx="14" fill="#FDECEC" stroke="#B01414"/>
+      <text x="75" y="212" text-anchor="middle" font-size="13" font-weight="700" fill="#8F0F0F">العميل</text>
+      <text x="75" y="232" text-anchor="middle" font-size="11" fill="#B01414">واتساب</text>
+
+      <rect x="180" y="180" width="130" height="76" rx="14" fill="#F0F0F0" stroke="#6E5A55"/>
+      <text x="245" y="208" text-anchor="middle" font-size="13" font-weight="700" fill="#1F1414">ميتا</text>
+      <text x="245" y="228" text-anchor="middle" font-size="11" fill="#6E5A55">نقل رسائل — مش كتالوج</text>
+
+      <rect x="360" y="30" width="500" height="380" rx="18" fill="#FAF7F3" stroke="#C8B8AC" stroke-dasharray="7 5"/>
+      <text x="378" y="54" font-size="12" font-weight="700" fill="#6E5A55">جهاز المطعم (السيرفر)</text>
+
+      <rect x="382" y="70" width="130" height="38" rx="10" fill="#FCEFD6" stroke="#D99A3C"/>
+      <text x="447" y="94" text-anchor="middle" font-size="12" font-weight="700" fill="#B87F28">نفق ngrok</text>
+      <rect x="530" y="70" width="308" height="38" rx="10" fill="#F0F0F0" stroke="#6E5A55"/>
+      <text x="684" y="94" text-anchor="middle" font-size="12" font-weight="700" fill="#1F1414">Node + Express API</text>
+
+      <rect x="382" y="126" width="456" height="196" rx="12" fill="#fff" stroke="#B01414"/>
+      <text x="398" y="145" font-size="12" font-weight="700" fill="#8F0F0F">المساعد الذكي + الكود</text>
+
+      <rect x="382" y="154" width="456" height="44" rx="10" fill="#FDECEC" stroke="#C21818"/>
+      <text x="610" y="175" text-anchor="middle" font-size="12" font-weight="700" fill="#8F0F0F">المساعد الذكي (LLM) · qwen3.8-27b</text>
+      <text x="610" y="190" text-anchor="middle" font-size="10" fill="#6E5A55">لكل رسالة يقرّر بنفسه: يرد عادي ولا ينادي أداة؟</text>
+
+      <rect x="382" y="210" width="216" height="48" rx="9" fill="#F0F0F0" stroke="#6E5A55"/>
+      <text x="490" y="231" text-anchor="middle" font-size="12" font-weight="700" fill="#1F1414">رد مباشر</text>
+      <text x="490" y="247" text-anchor="middle" font-size="10" fill="#6E5A55">كلام عادي — بدون أدوات</text>
+
+      <rect x="622" y="210" width="216" height="48" rx="9" fill="#FDECEC" stroke="#C21818"/>
+      <text x="730" y="231" text-anchor="middle" font-size="12" font-weight="700" fill="#8F0F0F">ينادي أداة</text>
+      <text x="730" y="247" text-anchor="middle" font-size="10" fill="#6E5A55">طلب · إضافة · تأكيد</text>
+
+      <rect x="382" y="270" width="456" height="46" rx="10" fill="#FCEFD6" stroke="#D99A3C"/>
+      <text x="610" y="291" text-anchor="middle" font-size="12" font-weight="700" fill="#B87F28">الكود وحده: يتحقق · يحسب · يكتب البيانات</text>
+      <text x="610" y="307" text-anchor="middle" font-size="10" fill="#6E5A55">كل نداء أداة يمرّ على تحقق · الإيقاف والتقييم والمراجعة</text>
+
+      <rect x="500" y="348" width="220" height="50" rx="10" fill="#FDECEC" stroke="#8F0F0F"/>
+      <text x="610" y="371" text-anchor="middle" font-size="12" font-weight="700" fill="#8F0F0F">MongoDB (محلي)</text>
+      <text x="610" y="388" text-anchor="middle" font-size="10" fill="#6E5A55">الأوردرات + التقييمات + الموظفين</text>
+
+      <rect x="878" y="180" width="110" height="76" rx="14" fill="#FCEFD6" stroke="#D99A3C"/>
+      <text x="933" y="208" text-anchor="middle" font-size="13" font-weight="700" fill="#B87F28">اللوحة</text>
+      <text x="933" y="228" text-anchor="middle" font-size="11" fill="#B87F28">متصفح المطبخ</text>
+
+      <rect x="878" y="300" width="110" height="66" rx="14" fill="#FDECEC" stroke="#B01414"/>
+      <text x="933" y="326" text-anchor="middle" font-size="12" font-weight="700" fill="#8F0F0F">OpenRouter</text>
+      <text x="933" y="344" text-anchor="middle" font-size="10" fill="#6E5A55">qwen3.8-27b</text>
+
+      <line x1="135" y1="218" x2="180" y2="218" stroke="#6E5A55" stroke-width="1.5" marker-start="url(#ar)" marker-end="url(#ar)"/>
+      <line x1="310" y1="196" x2="382" y2="96" stroke="#6E5A55" stroke-width="1.5" marker-end="url(#ar)"/>
+      <text x="330" y="150" text-anchor="middle" font-size="10" fill="#6E5A55" transform="rotate(-32 330 150)">ويب هوك</text>
+      <line x1="360" y1="240" x2="310" y2="240" stroke="#6E5A55" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#ar)"/>
+      <text x="335" y="258" text-anchor="middle" font-size="10" fill="#6E5A55">إرسال رد</text>
+      <line x1="838" y1="218" x2="878" y2="218" stroke="#6E5A55" stroke-width="1.5" marker-start="url(#ar)" marker-end="url(#ar)"/>
+      <line x1="610" y1="198" x2="490" y2="210" stroke="#6E5A55" stroke-width="1.5" marker-end="url(#ar)"/>
+      <line x1="610" y1="198" x2="730" y2="210" stroke="#6E5A55" stroke-width="1.5" marker-end="url(#ar)"/>
+      <line x1="730" y1="258" x2="730" y2="270" stroke="#6E5A55" stroke-width="1.5" marker-end="url(#ar)"/>
+      <line x1="838" y1="176" x2="878" y2="326" stroke="#D99A3C" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#ar)"/>
+      <line x1="610" y1="316" x2="610" y2="348" stroke="#6E5A55" stroke-width="1.5" marker-end="url(#ar)"/>
+    </svg>
+    <p class="px-2 pb-2 text-xs text-muted">المساعد الذكي (عبر OpenRouter) بيقرّر لكل رسالة: يرد مباشرة أو ينادي دوالنا كأدوات، وكل الأرقام والقرارات بتتحسب جوه دوالنا على جهاز المطعم — من غير كتالوج ميتا.</p>
+  </div>
+
+  <div class="mt-4 rounded-2xl border-2 border-gold bg-gold-100 p-5">
+    <h3 class="font-bold text-gold-700">من غير كتالوج ميتا — دوالنا هي المرجع</h3>
+    <p class="mt-1 text-sm text-ink/80">
+      إحنا <b>مش مستخدمين كتالوج واتساب (WhatsApp Catalog) بتاع ميتا</b>. المينيو والأسعار والأحجام عايشة عندنا في الكود
+      (ملف <span class="font-mono text-xs">menu.js</span>)، والمساعد بينادي <b>دوالنا الجاهزة</b> كأدوات وهي اللي بتحسب.
+      الفايدة إن أي تعديل سعر أو صنف من اللوحة بيسري <b>فوراً</b> من غير أي مزامنة مع ميتا، والعميل يكتب براحته بالمصري
+      والمساعد يفهمه ويرجّعه لدوالنا.
+    </p>
+  </div>
+
+  <div class="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+    <div class="card p-5"><h3 class="font-bold text-brand">المساعد يقرّر</h3><p class="mt-1 text-sm text-muted">لكل رسالة، المساعد يقرّر لوحده: يرد عادي من غير أدوات، ولا ينادي أداة لتنفيذ إجراء.</p></div>
+    <div class="card p-5"><h3 class="font-bold text-brand">الكود ينفّذ</h3><p class="mt-1 text-sm text-muted">مفيش سعر أو صنف أو تعديل بيتكتب من الموديل — الكود وحده يتحقق ويكتب في القاعدة.</p></div>
+    <div class="card p-5"><h3 class="font-bold text-brand">التشغيل محلي</h3><p class="mt-1 text-sm text-muted">MongoDB والقاعدة والأوردرات كلها على جهاز المطعم — أسرع وبدون تكلفة شهرية.</p></div>
+    <div class="card p-5"><h3 class="font-bold text-brand">نفق آمن</h3><p class="mt-1 text-sm text-muted">ngrok بيعمل رابط HTTPS للمطعم، وميتا بتبعت الويب هوك عليه من غير ما نفتح بورتات.</p></div>
+  </div>
+</section>
+
+<!-- ======================= AI ======================= -->
+<section id="ai">
+  <p class="text-xs font-bold uppercase tracking-widest text-brand">٥ · المساعد الذكي</p>
+  <h2 class="mt-1 text-3xl font-black">المساعد بيقرّر: يرد عادي ولا ينادي دوالنا كأداة؟</h2>
+  <p class="mt-2 max-w-3xl text-muted">مش شرط يستخدم أداة في كل رسالة. في كل دور، المساعد بيفكّر ويقرّر لوحده: لو الكلام عادي يرد عليك على طول من غير أي أداة، ولو محتاج إجراء (يضيف صنف، يشيله، يثبّت الأوردر) بينادي الأداة المناسبة من <b>دوالنا الجاهزة</b>. القرار قراره هو، والحساب والتنفيذ على دوالنا — مش على الموديل، ومش من أي كتالوج خارجي.</p>
+
+  <div class="mt-6 grid gap-4 md:grid-cols-2">
+    <div class="card p-5 border-r-4 border-sand-200">
+      <span class="text-xs font-bold text-muted">المسار ١ · كلام عادي</span>
+      <h3 class="mt-1 font-bold">رد مباشر — من غير أي أداة</h3>
+      <p class="mt-1 text-sm text-muted">المساعد بيكلّم العميل بشكل طبيعي: سلام، شكر، أسئلة عن المواعيد أو الفرع. مفيش أي بيانات بتتغيّر.</p>
+      <p class="mt-3 text-xs text-muted">«ازيك؟» · «بتفتحوا امتى؟» · «شكراً يا باشا»</p>
+    </div>
+    <div class="card p-5 border-r-4 border-brand">
+      <span class="text-xs font-bold text-brand">المسار ٢ · طلب أو إجراء</span>
+      <h3 class="mt-1 font-bold">ينادي أداة — والكود يتحقق وينفّذ</h3>
+      <p class="mt-1 text-sm text-muted">لو المطلوب تغيير في الأوردر، المساعد بينادي الأداة المناسبة. كل نداء بتتمرّ على تحقق في السيرفر قبل ما يتنفّذ.</p>
+      <p class="mt-3 text-xs text-muted">«عايز فول» · «شيل الفلافل» · «أكّد الطلب»</p>
+    </div>
+  </div>
+
+  <div class="mt-4 rounded-2xl border-2 border-gold bg-gold-100 p-5">
+    <h3 class="font-bold text-gold-700">القاعدة الذهبية</h3>
+    <p class="mt-1 text-sm text-ink/80">
+      المساعد بيقرّر امتى ينادي دوالنا، لكنه <b>مش بيكتب أي بيانات بنفسه ومش بيحسب بنفسه</b>: دوالنا هي الوحيدة اللي بتضيف للسلة،
+      وتحسب السعر (سعر الصنف أو الحجم × الكمية)، وتجمع الإجمالي، وتتأكد من التوفّر.
+      مفيش سعر غلط أو صنف مش موجود يقدر يوصل للأوردر، لأن كل «أداة» بيطلبها المساعد بتمرّ على تحقق وتُحسب جوه الكود الأول.
+    </p>
+  </div>
+
+  <h3 class="mt-7 text-lg font-bold">دوالنا الجاهزة — بيستخدمها المساعد كأدوات</h3>
+  <p class="mt-1 text-sm text-muted">دي الدوال اللي شغّالة على جهاز المطعم (زي <span class="font-mono text-xs">search</span> و <span class="font-mono text-xs">findOne</span> في ملف <span class="font-mono text-xs">menu.js</span>). المساعد <b>ممكن</b> يناديها لما يحتاج إجراء، وهي اللي بتولّد السعر والإجمالي. العميل يقدر يتكلم عادي بدون أي أداة.</p>
+  <div class="mt-4 overflow-x-auto card">
+    <table class="w-full min-w-[640px] text-right text-sm">
+      <thead class="bg-sand-100 text-xs font-bold text-muted"><tr><th class="px-4 py-3">الأداة</th><th class="px-4 py-3">بتعمل إيه</th><th class="px-4 py-3">مثال</th></tr></thead>
+      <tbody class="divide-y divide-sand-200">
+        <tr><td class="px-4 py-2 font-mono text-xs text-brand">search_menu</td><td class="px-4 py-2">تدور على الصنف بالاسم (مرن في الإملاء)</td><td class="px-4 py-2 text-muted">«عايز فول»</td></tr>
+        <tr><td class="px-4 py-2 font-mono text-xs text-brand">add_to_cart</td><td class="px-4 py-2">تضيف الصنف بالحجم والكمية بعد التحقق</td><td class="px-4 py-2 text-muted">بيتزا مارجريتا وسط ×٢</td></tr>
+        <tr><td class="px-4 py-2 font-mono text-xs text-brand">remove_item / set_qty</td><td class="px-4 py-2">تعدّل السلة</td><td class="px-4 py-2 text-muted">«شيل الفلافل»</td></tr>
+        <tr><td class="px-4 py-2 font-mono text-xs text-brand">recommend</td><td class="px-4 py-2">تقترح إضافة مناسبة للطلب</td><td class="px-4 py-2 text-muted">طبق جانبي أو مشروب</td></tr>
+        <tr><td class="px-4 py-2 font-mono text-xs text-brand">set_phone / set_address</td><td class="px-4 py-2">تسجّل رقم العميل وعنوانه عند الخروج</td><td class="px-4 py-2 text-muted">«هدفع كاش»</td></tr>
+        <tr><td class="px-4 py-2 font-mono text-xs text-brand">get_eta</td><td class="px-4 py-2">تقرا وقت الوصول الحالي (بيحدده الأدمن)</td><td class="px-4 py-2 text-muted">٦٠ دقيقة</td></tr>
+        <tr><td class="px-4 py-2 font-mono text-xs text-brand">place_order</td><td class="px-4 py-2">تثبّت الأوردر وتبعته للمطبخ</td><td class="px-4 py-2 text-muted">اتجاه واحد للمطبخ</td></tr>
+        <tr><td class="px-4 py-2 font-mono text-xs text-brand">request_human</td><td class="px-4 py-2">تحوّل العميل لموظف لو احتاج</td><td class="px-4 py-2 text-muted">«عايز أكلم حد»</td></tr>
+      </tbody>
+    </table>
+    <p class="border-t border-sand-200 px-4 py-3 text-xs text-muted">كل الحسابات — سعر الحجم × الكمية، والمجموع، وموعد الوصول — بتطلع من دوالنا. المساعد مابيجمعش ولا بيخمّن أي رقم بنفسه.</p>
+  </div>
+
+  <div class="mt-5 grid gap-4 md:grid-cols-3">
+    <div class="card p-5"><h3 class="font-bold text-brand">حماية من الكلام الخارج</h3><p class="mt-1 text-sm text-muted">لو العميل خرج عن الطلب، المساعد يرجّعه للأوردر بلطف من غير ما يخرج عن دوره.</p></div>
+    <div class="card p-5"><h3 class="font-bold text-brand">حماية من محاولات الاختراق</h3><p class="mt-1 text-sm text-muted">كلام العميل «بيانات» مش «أوامر». المساعد مفيش عنده صلاحية يغيّر سعر أو صنف.</p></div>
+    <div class="card p-5"><h3 class="font-bold text-brand">نصوص جاهزة وآمنة</h3><p class="mt-1 text-sm text-muted">الرسائل الحسّاسة من قوالب جاهزة بالمصري جوه الكود، فمفيش كلام غريب بيطلع للعميل.</p></div>
+  </div>
+</section>
+
+<!-- ======================= SAFETY ======================= -->
+<section id="safety">
+  <p class="text-xs font-bold uppercase tracking-widest text-brand">٦ · الأمان والأدب</p>
+  <h2 class="mt-1 text-3xl font-black">لو العميل قِلّ أدبه أو دخل في لفّة</h2>
+  <p class="mt-2 max-w-3xl text-muted">سلم من ٣ خطوات، بيرفع مع الإساءة. وكمان حماية من اللفّ والدوران من غير ما يأكد الأوردر.</p>
+
+  <div class="mt-6 grid gap-4 md:grid-cols-3">
+    <div class="card p-6 border-r-4 border-gold">
+      <span class="text-xs font-bold text-gold-700">الخطوة ١</span>
+      <h3 class="mt-1 font-bold">تنبيه لطيف</h3>
+      <p class="mt-1 text-sm text-muted">لو خرج عن الطلب أو حاول يلخبط، المساعد يرجّعه للأوردر بلطف.</p>
+    </div>
+    <div class="card p-6 border-r-4 border-brand">
+      <span class="text-xs font-bold text-brand">الخطوة ٢</span>
+      <h3 class="mt-1 font-bold">إبلاغ المدير + إيقاف مؤقت</h3>
+      <p class="mt-1 text-sm text-muted">لو كرّر الإساءة أو السب، المدير بياخد تنبيه على اللوحة، والمحادثة تتوقف ١٥ دقيقة بهدوء.</p>
+    </div>
+    <div class="card p-6 border-r-4 border-brand-800">
+      <span class="text-xs font-bold text-brand-800">الخطوة ٣</span>
+      <h3 class="mt-1 font-bold">التهديد → تبليغ المالك</h3>
+      <p class="mt-1 text-sm text-muted">في الحالات الشديدة، المالك (السوبر أدمن) بيتبلّغ فوراً وبيتابع بنفسه.</p>
+    </div>
+  </div>
+
+  <div class="mt-4 card p-5">
+    <h3 class="font-bold text-brand">حماية من اللفّ من غير تأكيد</h3>
+    <p class="mt-1 text-sm text-muted">لو العميل عاد نفس الخطوة ٣ مرات من غير ما يأكد الأوردر، المساعد يسأله سؤال واضح، ولو فضل يدور، الطلب يتحوّل للمدير بدل ما يفضل معلّق.</p>
+  </div>
+</section>
+
+<!-- ======================= CHECKOUT ======================= -->
+<section id="checkout">
+  <p class="text-xs font-bold uppercase tracking-widest text-brand">٧ · الخروج والدفع</p>
+  <h2 class="mt-1 text-3xl font-black">السعر واضح، والتوصيل «عند الاستلام»</h2>
+  <div class="mt-6 grid gap-5 lg:grid-cols-2">
+    <div class="space-y-3">
+      <div class="card p-5"><h3 class="font-bold text-brand">نسأل الرقم والعنوان كل مرة</h3><p class="mt-1 text-sm text-muted">قبل ما نأكد الأوردر، المساعد بيطلب رقم الموبايل والعنوان التوصيل — حتى لو العميل طلب قبل كده، للتأكد.</p></div>
+      <div class="card p-5"><h3 class="font-bold text-brand">محدش يعرف رقم التوصيل</h3><p class="mt-1 text-sm text-muted">المساعد مايقولش رقم التوصيل، والأدمن كمان مش بيدخّل رقم. الرسالة بس بتقول «+ التوصيل ودفع عند الاستلام 💰».</p></div>
+      <div class="card p-5"><h3 class="font-bold text-brand">إشعار اتجاه واحد للمطبخ</h3><p class="mt-1 text-sm text-muted">بمجرد ما العميل يأكد، الأوردر + الإجمالي (اللي حسبته دوالنا) يوصلوا للمطبخ. المطبخ مايردّش على المساعد — بس يأكد من عنده.</p></div>
+    </div>
+
+    <div class="mx-auto w-full max-w-sm">
+      <div class="rounded-3xl bg-[#efeae2] p-3 shadow-soft ring-1 ring-sand-200">
+        <div class="space-y-2 rounded-2xl bg-white/60 p-3">
+          <div class="mr-auto max-w-[85%] rounded-2xl rounded-tr-sm bg-[#DCF8C6] px-3 py-2 text-sm leading-relaxed">
+            تمام يا فندم 👍 طلبك:<br>
+            ٢ × بيتزا مارجريتا (وسط)<br>
+            إجمالي الأصناف: <b>250 جنيه</b><br>
+            + التوصيل ودفع عند الاستلام 💰<br>
+            الأوردر هيوصلك خلال ~<b>60 دقيقة</b>.<br><br>نأكد الطلب؟
+          </div>
+          <div class="ml-auto max-w-[60%] rounded-2xl rounded-tl-sm bg-white px-3 py-2 text-sm shadow-sm">ايوه أكد</div>
+          <div class="mr-auto max-w-[85%] rounded-2xl rounded-tr-sm bg-[#DCF8C6] px-3 py-2 text-sm leading-relaxed">
+            وصلك للمطعم يا باشا ✔️ هنجهّز حالاً وهنقولك أول ما يبدأ التحضير.
+          </div>
+        </div>
+      </div>
+      <p class="mt-3 text-center text-xs text-muted">شكل المحادثة عند الخروج.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= FEEDBACK ======================= -->
+<section id="feedback">
+  <p class="text-xs font-bold uppercase tracking-widest text-brand">٨ · التقييم</p>
+  <h2 class="mt-1 text-3xl font-black">بنسأل عن الخدمة بعد التسليم</h2>
+  <div class="mt-6 grid gap-5 lg:grid-cols-3">
+    <div class="card p-6"><div class="text-2xl">🕑</div><h3 class="mt-2 font-bold">بعد ساعتين</h3><p class="mt-1 text-sm text-muted">بعد ما الأوردر يتسلّم بساعتين، المساعد يبعت رسالة تقييم قصيرة.</p></div>
+    <div class="card p-6"><div class="text-2xl">🌟</div><h3 class="mt-2 font-bold">نجوم + رأي</h3><p class="mt-1 text-sm text-muted">العميل يقيّم من ١ لـ ٥ ويكتب رأيه بحرية.</p></div>
+    <div class="card p-6 border-r-4 border-brand"><div class="text-2xl">⚠️</div><h3 class="mt-2 font-bold">كلام وحش؟ إبلاغ فوري</h3><p class="mt-1 text-sm text-muted">لو التقييم فيه كلام مسيء، المدير <b>والمالك</b> بيتبلّغوا على طول. قايمة الكلام المسيء يعدّلها المالك من اللوحة.</p></div>
+  </div>
+</section>
+
+<!-- ======================= DASHBOARD ======================= -->
+<section id="dashboard">
+  <p class="text-xs font-bold uppercase tracking-widest text-brand">٩ · لوحة الإدارة</p>
+  <h2 class="mt-1 text-3xl font-black">كل حاجة المطبخ محتاجها في مكان واحد</h2>
+  <div class="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+    <div class="card p-6"><h3 class="font-bold text-brand">لوحة الأوردرات</h3><ul class="mt-2 space-y-1 text-sm text-muted"><li>• الأوردرات الجديدة بالترتيب</li><li>• تأكيد الأوردر وبدء التحضير</li><li>• تعليم «اتسلّم»</li><li>• حالة الطلب مع كل خطوة</li></ul></div>
+    <div class="card p-6"><h3 class="font-bold text-brand">إدارة القايمة</h3><ul class="mt-2 space-y-1 text-sm text-muted"><li>• تعديل الأسعار</li><li>• تشغيل/إيقاف صنف بنقرة</li><li>• الأقسام والأصناف والأحجام</li></ul></div>
+    <div class="card p-6"><h3 class="font-bold text-brand">الموظفون</h3><ul class="mt-2 space-y-1 text-sm text-muted"><li>• المالك يعمل حساب مدير</li><li>• اسم مستخدم + كلمة سر</li><li>• تغيير كلمة السر لو اتنسيت</li><li>• إيقاف حساب فوراً</li></ul></div>
+    <div class="card p-6"><h3 class="font-bold text-brand">الإعدادات</h3><ul class="mt-2 space-y-1 text-sm text-muted"><li>• وقت الوصول (يحدده الأدمن)</li><li>• وضع الزحمة</li><li>• رسالة المواعيد المغلقة</li><li>• استقبال الأوردرات (تشغيل/إيقاف)</li></ul></div>
+    <div class="card p-6"><h3 class="font-bold text-brand">وضع الزحمة</h3><ul class="mt-2 space-y-1 text-sm text-muted"><li>• زرار + دقايق (٣٠ افتراضي)</li><li>• تزوّد الوقت المتوقع</li><li>• رسالة تأخير لطيفة للعميل</li></ul></div>
+    <div class="card p-6"><h3 class="font-bold text-brand">المواعيد المغلقة</h3><ul class="mt-2 space-y-1 text-sm text-muted"><li>• رسالة ثابتة يعدّلها الأدمن</li><li>• زرار تشغيل/إيقاف</li><li>• مواعيد الفتح والغلق</li></ul></div>
+  </div>
+</section>
+
+<!-- ======================= REPORTS ======================= -->
+<section id="reports">
+  <p class="text-xs font-bold uppercase tracking-widest text-brand">١٠ · التقارير</p>
+  <h2 class="mt-1 text-3xl font-black">أرقام المطعم بترسم نفسها</h2>
+  <p class="mt-2 max-w-3xl text-muted">كل أوردر بيتحفظ، والتقارير للقراءة فقط (مفيش تعديل ولا تصدير). يوم / شهر / سنة.</p>
+
+  <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="card p-5"><p class="text-xs text-muted">أوردرات الشهر</p><p class="mt-1 text-3xl font-black text-brand" id="kpiOrders">—</p></div>
+    <div class="card p-5"><p class="text-xs text-muted">إجمالي البيع</p><p class="mt-1 text-3xl font-black text-brand" id="kpiRevenue">—</p></div>
+    <div class="card p-5"><p class="text-xs text-muted">متوسط الأوردر</p><p class="mt-1 text-3xl font-black text-brand" id="kpiAvg">—</p></div>
+    <div class="card p-5"><p class="text-xs text-muted">متوسط التقييم</p><p class="mt-1 text-3xl font-black text-gold-700" id="kpiRating">—</p></div>
+  </div>
+
+  <div class="mt-5 grid gap-5 lg:grid-cols-3">
+    <div class="card p-5 lg:col-span-2"><h3 class="font-bold text-brand">الأوردرات والبيع آخر ٧ أيام</h3><div class="mt-3 h-64"><canvas id="chartTrend"></canvas></div></div>
+    <div class="card p-5"><h3 class="font-bold text-brand">توزيع الأقسام</h3><div class="mt-3 h-64"><canvas id="chartMix"></canvas></div></div>
+    <div class="card p-5 lg:col-span-3"><h3 class="font-bold text-brand">أكثر الأصناف طلباً</h3><div class="mt-3 h-64"><canvas id="chartItems"></canvas></div></div>
+  </div>
+</section>
+
+<!-- ======================= COST ======================= -->
+<section id="cost">
+  <p class="text-xs font-bold uppercase tracking-widest text-brand">١١ · التكلفة</p>
+  <h2 class="mt-1 text-3xl font-black">التكلفة الشهرية المتوقعة</h2>
+  <p class="mt-2 max-w-3xl text-muted">بندين متغيّرين حسب حجم الطلبات: المساعد الذكي (OpenRouter) ورسايل واتساب (ميتا). الباقي ثابت صفر.</p>
+  <div class="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+    <div class="card p-6"><p class="text-sm text-muted">المساعد الذكي (OpenRouter)</p><p class="mt-1 text-3xl font-black text-brand">~٧٥٠–١٬٢٥٠ ج.م</p><p class="mt-2 text-xs text-muted">موديل qwen3.8-27b — تقدير عند ١٬٠٠٠ أوردر/شهر (سعر الموديل ٠٫٤٠ دولار للإدخال و٣ دولار للإخراج لكل مليون توكن). بنشغّل «التفكير» خفيف + prompt caching لتقليل الإخراج، وبنحط حد شهري مقفول.</p></div>
+    <div class="card p-6"><p class="text-sm text-muted">رسايل واتساب (ميتا) <span class="rounded-full bg-gold-100 px-2 py-0.5 text-[10px] font-bold text-gold-700">بند جديد</span></p><p class="mt-1 text-3xl font-black text-brand">~١٬٦٤٠ ج.م</p><p class="mt-2 text-xs text-muted">كل رد للعميل يُحسب «رسالة خدمة». أول ١٬٠٠٠ رسالة/رقم في الشهر مجاناً، وبعدها ~٠٫٠٠٣٦ دولار للرسالة. الرسائل الواردة مجاناً. بدأ الاحتساب من ١ أكتوبر ٢٠٢٦.</p></div>
+    <div class="card p-6"><p class="text-sm text-muted">النفق (ngrok)</p><p class="mt-1 text-3xl font-black text-brand">0 ج.م</p><p class="mt-2 text-xs text-muted">الخطة المجانية تكفي للبداية. لو الأوردرات زادت عن حدها، بنرفع الخطة لاحقاً بمبلغ بسيط.</p></div>
+    <div class="card p-6"><p class="text-sm text-muted">السيرفر (جهاز المطعم)</p><p class="mt-1 text-3xl font-black text-brand">0 ج.م</p><p class="mt-2 text-xs text-muted">مفيش سيرفر شهري — الجهاز الموجود هو السيرفر، والمينيو والدوال عايشين في الكود من غير أي تكلفة كتالوج منتجات.</p></div>
+  </div>
+
+  <div class="mt-6 overflow-x-auto">
+    <table class="w-full min-w-[34rem] overflow-hidden rounded-2xl border border-sand-200 bg-white text-right text-sm shadow-soft">
+      <thead class="bg-brand-50 text-brand">
+        <tr>
+          <th class="px-4 py-3 font-bold">أوردر / شهر</th>
+          <th class="px-4 py-3 font-bold">المساعد الذكي (OpenRouter)</th>
+          <th class="px-4 py-3 font-bold">رسايل واتساب (ميتا)</th>
+          <th class="px-4 py-3 font-bold">الإجمالي التقريبي</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-sand-200">
+        <tr><td class="px-4 py-3 font-bold">١٬٠٠٠</td><td class="px-4 py-3 text-muted">٧٥٠–١٬٢٥٠ ج.م</td><td class="px-4 py-3 text-muted">~١٬٦٤٠ ج.م</td><td class="px-4 py-3 font-bold">٢٬٤٠٠–٢٬٩٠٠ ج.م</td></tr>
+        <tr><td class="px-4 py-3 font-bold">٢٬٥٠٠</td><td class="px-4 py-3 text-muted">١٬٩٠٠–٣٬١٠٠ ج.م</td><td class="px-4 py-3 text-muted">~٤٬٤٠٠ ج.م</td><td class="px-4 py-3 font-bold">٦٬٣٠٠–٧٬٥٠٠ ج.م</td></tr>
+        <tr><td class="px-4 py-3 font-bold">٥٬٠٠٠</td><td class="px-4 py-3 text-muted">٣٬٧٥٠–٦٬٢٥٠ ج.م</td><td class="px-4 py-3 text-muted">~٩٬٠٠٠ ج.م</td><td class="px-4 py-3 font-bold">١٢٬٧٥٠–١٥٬٢٥٠ ج.م</td></tr>
+      </tbody>
+    </table>
+    <p class="mt-2 text-xs text-muted">تقديرات بافتراض ١ دولار = ٥٠ ج.م، و~١٥ نداء للموديل و~٨ رسائل بوت لكل أوردر. الأرقام بتتقاس من سجل الاستخدام الفعلي.</p>
+  </div>
+</section>
+
+<!-- ======================= AUTH ======================= -->
+<section id="auth">
+  <p class="text-xs font-bold uppercase tracking-widest text-brand">١٢ · الدخول والحسابات</p>
+  <h2 class="mt-1 text-3xl font-black">بسيط: اسم مستخدم وكلمة سر</h2>
+  <div class="mt-6 grid gap-4 md:grid-cols-2">
+    <div class="card p-6"><h3 class="font-bold text-brand">المالك (السوبر أدمن)</h3><ul class="mt-2 space-y-1 text-sm text-muted"><li>• يعمل حسابات المدراء</li><li>• يغيّر كلمة السر لو المدير نسيها</li><li>• يوقّف حساب في ثانية</li><li>• بيوصله تبليغ الإساءة الشديدة والتقييم السيئ</li></ul></div>
+    <div class="card p-6"><h3 class="font-bold text-brand">المدير</h3><ul class="mt-2 space-y-1 text-sm text-muted"><li>• يدير الأوردرات ويأكد ويحضّر</li><li>• يعدّل القايمة</li><li>• يوقف محادثة عميل</li><li>• يشوف التقارير</li></ul></div>
+  </div>
+  <p class="mt-3 text-xs text-muted">مفيش كود تحقق بالبريد ولا رسايل تأكيد — الدخول بسيط، والجلسة مؤقتة.</p>
+</section>
+
+<!-- ======================= DEMO ======================= -->
+<section id="demo">
+  <p class="text-xs font-bold uppercase tracking-widest text-brand">١٣ · تجربة حيّة</p>
+  <h2 class="mt-1 text-3xl font-black">جرّب بنفسك</h2>
+  <p class="mt-2 max-w-4xl text-muted">
+    دي تجربة حيّة بتشتغل في المتصفح. المساعد هنا بيقرّر لوحده: جرّب تسلّم عليه أو تسأله «بتفتحوا امتى؟»
+    وهيرد عليك بشكل عادي من غير ما ينادي أي أداة. وبعدين اطلب حاجة (اكتب «فول» أو «بيتزا») وهينادي دوالنا،
+    والسعر والإجمالي بيتحسبوا جوه الدوال — مش من أي كتالوج.
+    وأدخل بنفسك على اللوحة كمدير، أكّد الأوردر وابعت «جاري التحضير». وفي الآخر بصّ على التقرير.
+  </p>
+
+  <div class="mt-6 grid gap-6 lg:grid-cols-12">
+    <!-- Phone -->
+    <div class="lg:col-span-4">
+      <div class="mx-auto flex h-[680px] max-w-sm flex-col overflow-hidden rounded-[2.2rem] border-8 border-ink bg-[#efeae2] shadow-soft">
+        <div class="flex items-center gap-3 bg-[#075E54] px-4 py-3 text-white">
+          <img src="logo.jpg" alt="الونش" class="h-10 w-10 rounded-full ring-2 ring-white/30">
+          <div class="leading-tight">
+            <p class="text-sm font-bold">مطعم الونش</p>
+            <p class="text-[11px] text-emerald-100">بيخصّص دلوقتي · حساب تجاري</p>
+          </div>
+        </div>
+        <div id="chat" class="chat-scroll flex-1 space-y-2 overflow-y-auto p-3"></div>
+        <div class="flex flex-wrap gap-1 border-t border-sand-200 bg-sand-50 p-2" id="quickBtns"></div>
+        <form id="chatForm" class="flex items-center gap-2 bg-sand-100 p-2">
+          <input id="chatInput" dir="rtl" autocomplete="off" placeholder="اكتب رسالة…" class="min-w-0 flex-1 rounded-full border-0 bg-white px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand">
+          <button class="rounded-full bg-brand px-4 py-2 text-sm font-bold text-white hover:bg-brand-700">إرسال</button>
+        </form>
+      </div>
+      <p class="mt-3 text-center text-xs text-muted">ردود مباشرة (بلا أدوات): <b id="directCount">0</b> · نداءات الأدوات: <b id="toolCount">0</b></p>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="space-y-5 lg:col-span-8">
+      <div id="loginBox" class="card p-5"></div>
+
+      <div id="dash" class="hidden space-y-5">
+        <div class="card p-4">
+          <div class="flex flex-wrap items-center gap-2 text-xs">
+            <img src="logo.jpg" alt="" class="h-8 w-8 rounded-full">
+            <span class="font-bold text-brand">لوحة الونش</span>
+            <span class="text-muted">مسجل الدخول: <b id="whoami">—</b></span>
+            <span class="mr-auto"></span>
+            <button data-ui="lang" class="rounded-full border border-sand-200 px-3 py-1 font-semibold hover:bg-sand-50">English</button>
+            <button data-ui="signout" class="rounded-full border border-sand-200 px-3 py-1 hover:bg-sand-50">خروج</button>
+          </div>
+        </div>
+
+        <div class="grid gap-5 xl:grid-cols-2">
+          <div class="card overflow-hidden">
+            <div class="flex items-center justify-between border-b border-sand-200 px-4 py-3">
+              <h3 class="font-bold text-brand">الأوردرات</h3>
+              <span id="botState" class="chip bg-brand-50 px-3 py-1 text-xs font-bold text-brand">—</span>
+            </div>
+            <div id="ordersBox" class="max-h-[26rem] divide-y divide-sand-200 overflow-y-auto chat-scroll"></div>
+          </div>
+
+          <div class="space-y-5">
+            <div class="card p-4">
+              <h3 class="font-bold text-brand">الموظفون</h3>
+              <p class="mt-1 text-xs text-muted">المالك يعمل مدراء، ويغيّر كلمات السر.</p>
+              <div id="staffBox" class="mt-3 space-y-2"></div>
+              <form data-staffform class="mt-3 flex flex-wrap gap-2">
+                <input data-keep="sfName" placeholder="اسم المدير" class="min-w-0 flex-1 rounded-lg border border-sand-200 px-3 py-1.5 text-sm">
+                <input data-keep="sfUser" placeholder="اسم المستخدم" class="w-32 rounded-lg border border-sand-200 px-3 py-1.5 text-sm">
+                <input data-keep="sfPass" type="text" placeholder="كلمة السر" class="w-32 rounded-lg border border-sand-200 px-3 py-1.5 text-sm">
+                <button class="rounded-lg bg-ink px-3 py-1.5 text-sm font-bold text-white hover:bg-ink-700">إضافة مدير</button>
+              </form>
+            </div>
+
+            <div class="card p-4">
+              <h3 class="font-bold text-brand">الإعدادات</h3>
+              <div class="mt-3 space-y-3 text-sm">
+                <label class="flex items-center justify-between gap-3">وضع الزحمة
+                  <span class="flex items-center gap-2">
+                    <input data-set="jam" type="number" min="0" value="30" class="w-20 rounded border border-sand-200 px-2 py-1">
+                    <input data-set="jamOn" type="checkbox" class="h-4 w-4 accent-brand">
+                  </span>
+                </label>
+                <label class="flex items-center justify-between gap-3">وقت الوصول (دقيقة)
+                  <input data-set="eta" type="number" min="5" value="60" class="w-24 rounded border border-sand-200 px-2 py-1">
+                </label>
+                <label class="flex items-center justify-between gap-3">المواعيد المغلقة
+                  <input data-set="closedOn" type="checkbox" class="h-4 w-4 accent-brand">
+                </label>
+                <input data-set="closedMsg" value="المطعم مغلق حالياً، بنفتح من ٨ الصبح لحد ١٢ بالليل 🌛" class="w-full rounded border border-sand-200 px-2 py-1">
+                <label class="flex items-center justify-between gap-3">استقبال الأوردرات
+                  <input data-set="accepting" type="checkbox" checked class="h-4 w-4 accent-brand">
+                </label>
+              </div>
+              <p id="setNote" class="mt-3 text-xs text-muted"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toasts" class="fixed bottom-4 left-4 z-50 space-y-2"></div>
+</section>
+
+</main>
+
+<script>
+/* =========================================================================
+   بيانات القايمة (من ملف menu.js) + منطق مساعد الأونش
+   ========================================================================= */
+const items = (category, rows) => rows.map(([name, price]) => ({ category, name, price }));
+const sized = (category, rows) =>
+  rows.map(([name, s, m, l]) => ({ category, name, sizes: { 'صغير': s, 'وسط': m, 'كبير': l } }));
+
+const MENU = [
+  ...items('فول', [
+    ['فول', 10], ['فول بابا', 12], ['فول ميكس', 12], ['فول باذنجان', 12], ['فول بطاطس', 14],
+    ['فول اوميليت', 18], ['فول بيض مسلوق', 17], ['فول زبدة', 14], ['فول سمنة', 15],
+    ['فول زيت زيتون', 15], ['فول صلصة', 12], ['فول سجق', 20], ['فول قريش', 14],
+    ['فول اسكندراني', 12], ['فول خلطة', 12], ['فول كبده', 12]
+  ]),
+  ...items('فلافل', [
+    ['فلافل', 10], ['فلافل بابا', 12], ['فلافل اسكندراني', 12], ['فلافل باذنجان', 12],
+    ['فلافل قريش', 15], ['فلافل بطاطس', 15], ['فلافل جبنة رومي', 18], ['فلافل بيض مسلوق', 18],
+    ['فلافل بطاطس باذنجان', 15]
+  ]),
+  ...items('بطاطس', [
+    ['بوم فريت', 18], ['بطاطس شيبسي', 15], ['بطاطس بوريه', 12], ['بطاطس بانيه', 15],
+    ['بطاطس شيبسي قريش', 20], ['بطاطس بابا', 20], ['بطاطس باذنجان', 20], ['بوريه لحمة مفرومة', 22],
+    ['بطاطس رومي', 25], ['بطاطس قريش', 22], ['بوريه بيض اوميليت', 22], ['بوريه بيض مسلوق', 20],
+    ['بوم فريت بيض مسلوق', 23], ['بوم فريت اوميليت', 25]
+  ]),
+  ...items('بيض', [
+    ['بيض مسلوق', 12], ['بيض اوميليت', 15], ['بيض مسلوق رومي', 23], ['بيض اوميليت رومي', 25],
+    ['بيض مسلوق قريش', 20], ['بيض اوميليت قريش', 23], ['بيض اسباني', 18], ['بيض مسلوق مش', 20],
+    ['بيض شكشوكة', 12], ['بيض بسطرمة', 30], ['بيتزا بيض', 25], ['بيتزا بيض ميكس', 35],
+    ['بيتزا بيض سجق', 32], ['بيتزا بيض برجر', 30], ['بيتزا بيض بسطرمة', 35]
+  ]),
+  ...items('متنوع', [
+    ['ساجة', 30], ['ساجة برجر', 35], ['ساجة سجق', 35], ['ساجة بطاطس', 35], ['ساجة بسطرمة', 35],
+    ['كبده اسكندراني', 30], ['سجق', 25], ['جبنة رومي', 24], ['ديناميت', 18], ['بابا غنوج', 12],
+    ['باذنجان مقلي', 10], ['مسقعة سادة', 12], ['مسقعة لحمة', 15], ['مش بالخلطة', 14],
+    ['جبنة قريش بالخلطة', 14], ['قريش زيت زيتون', 18], ['مقليه كيزر', 30]
+  ]),
+  ...items('علب وباكت', [
+    ['علبة فول سادة', 15], ['علبة فول محوج', 18], ['علبة فول خلطة', 20], ['علبة فول صلصة', 20],
+    ['علبة فول سجق', 40], ['علبة فول بابا', 25], ['علبة فول بيض مسلوق/اوميليت', 25],
+    ['علبة فول سمنة/زبدة/زيت زيتون', 25], ['علبة فول اسكندراني', 15], ['علبة فول كبده', 18],
+    ['علبة عجينة طعمية', 12], ['علبة باذنجان مقلي', 15], ['علبة بابا غنوج', 15],
+    ['علبة مسقعة سادة', 20], ['علبة مسقعة لحمة', 20], ['علبة بيض شكشوكة', 20],
+    ['باكت بطاطس', 25], ['باكت بطاطس شيبسي', 20], ['باكت طعمية (1 قرص)', 5],
+    ['باكت طعمية اسكندراني (1 قرص)', 8], ['علبة سجق', 60], ['خيار مخلل', 7],
+    ['عيش شامي 1 رغيف', 2.5], ['باكت عيش محمص', 12]
+  ]),
+  ...items('جانبي', [
+    ['بيض مسلوق 1 بيضة', 10], ['بطاطس بوريه (جانبي)', 12], ['باذنجان / فلفل متبل', 12],
+    ['طماطم متبلة', 10], ['طحينة', 12], ['طرشى', 5], ['مش بالخلطة (جانبي)', 15],
+    ['جبنة قريش (جانبي)', 18], ['سلطة خضراء', 8]
+  ]),
+  ...sized('بيتزا', [
+    ['بيتزا بسطرمة', 120, 170, 215], ['بيتزا بولونيز', 120, 170, 215], ['بيتزا تونة', 120, 170, 215],
+    ['بيتزا رانش فراخ', 120, 170, 215], ['بيتزا سجق', 110, 145, 180], ['بيتزا سلامي', 115, 145, 180],
+    ['بيتزا عشاق الجبنة', 120, 170, 215], ['بيتزا باربكيو', 125, 180, 215],
+    ['بيتزا مارجريتا', 90, 125, 150], ['بيتزا ميكس لحوم', 145, 195, 215],
+    ['بيتزا هوت دوج', 100, 135, 170], ['بيتزا استريبس رانش', 120, 170, 205]
+  ]),
+  ...sized('اضافات البيتزا', [
+    ['اضافة بيتزا بسطرمة', 40, 50, 60], ['اضافة بيتزا رومي', 25, 35, 50],
+    ['اضافة بيتزا سجق', 25, 35, 55], ['اضافة بيتزا سلامي', 25, 40, 50],
+    ['اضافة بيتزا هوت دوج', 25, 30, 45], ['اضافة بيتزا فراخ', 30, 45, 55],
+    ['اضافة بيتزا جبنة شيدر', 25, 30, 50], ['اضافة بيتزا كيري', 20, 30, 45],
+    ['اضافة بيتزا موتزاريلا', 25, 40, 50], ['اضافة بيتزا لحوم', 30, 45, 55],
+    ['اضافة بيتزا مشروم', 15, 20, 25]
+  ]),
+  ...items('كريب فراخ', [
+    ['كريب شاورما فراخ', 100], ['كريب تشيكن زنجر', 100], ['كريب ستريبس', 100],
+    ['كريب فراخ كريسبي', 100], ['كريب فاميتا فراخ', 100], ['كريب ميجا', 115],
+    ['كريب ميكس فراخ', 120], ['كريب الونش', 120]
+  ]),
+  ...items('كريب لحمة', [
+    ['كريب ميكسيكانو هوت دوج', 75], ['كريب برجر', 80], ['كريب سجق جريل', 85],
+    ['كريب سلامي مدخن', 85], ['كريب كفتة جريل', 85], ['كريب ميكس لحوم', 120]
+  ]),
+  ...items('كريب جبنة', [
+    ['كريب جبنة موزاريلا', 60], ['كريب بطاطس', 80], ['كريب جبنة رومي', 80],
+    ['كريب جبنة كيري', 85], ['كريب عشاق الجبنة', 100], ['كريب كوردون بلو', 115]
+  ]),
+  ...items('اضافات الكريب', [
+    ['اضافة كريب كيري', 25], ['اضافة كريب موتزاريلا', 20], ['اضافة كريب رومي', 30],
+    ['اضافة كريب هوت دوج', 20], ['اضافة كريب ستريبس زنجر', 30], ['اضافة كريب برجر', 30],
+    ['اضافة كريب بسطرمة', 40], ['اضافة كريب كريسبي', 45], ['اضافة كريب بطاطس', 25],
+    ['اضافة كريب سلامي', 25], ['اضافة كريب كبدة', 30], ['اضافة كريب جبنة شيدر', 25],
+    ['اضافة كريب فراخ شاورما', 30], ['اضافة كريب لحوم', 30], ['اضافة كريب كفتة', 30],
+    ['اضافة كريب مشروم', 10]
+  ]),
+  ...items('لقمة الونش', [
+    ['لقمة الونش هوت دوج', 80], ['لقمة الونش سجق', 90], ['لقمة الونش فراخ', 90],
+    ['لقمة الونش لحمة', 90], ['لقمة الونش سلامي وكيري', 110], ['لقمة الونش مشكل جبن', 100],
+    ['لقمة الونش بسطرمة', 110], ['لقمة الونش برجر', 100], ['لقمة الونش ستريبس', 90]
+  ]),
+  ...items('حواوشي ايطالي', [
+    ['حواوشي ايطالي سجق', 135], ['حواوشي ايطالي سلامي + كيري', 135], ['حواوشي ايطالي مكس جبن', 135],
+    ['حواوشي ايطالي فراخ', 135], ['حواوشي ايطالي لحمة', 140], ['حواوشي ايطالي بسطرمة', 145],
+    ['حواوشي القنبلة', 170]
+  ]),
+  ...items('مكرونة', [
+    ['مكرونة صوص احمر', 45], ['مكرونة سجق صوص احمر', 90], ['مكرونة كبدة صوص احمر', 85],
+    ['مكرونة لحمة مفرومة', 90], ['مكرونة فراخ صوص احمر', 100], ['مكرونة فراخ صوص ابيض', 95],
+    ['مكرونة سلامي صوص ابيض', 100], ['مكرونة ميكس جبن', 115], ['مكرونة بسطرمة صوص ابيض', 120],
+    ['مكرونة فرن', 75], ['مكرونة نجرسكو', 115]
+  ])
+];
+
+const RECS = {
+  'فول': ['فلافل', 'طرشى', 'باكت عيش محمص'],
+  'فلافل': ['فول', 'طحينة', 'طرشى'],
+  'بطاطس': ['فلافل', 'طرشى'],
+  'بيض': ['فول', 'عيش شامي 1 رغيف'],
+  'متنوع': ['خيار مخلل', 'طرشى'],
+  'علب وباكت': ['طرشى', 'سلطة خضراء'],
+  'بيتزا': ['اضافة بيتزا موتزاريلا', 'باكت بطاطس شيبسي', 'سلطة خضراء'],
+  'كريب فراخ': ['اضافة كريب جبنة شيدر', 'باكت بطاطس شيبسي'],
+  'كريب لحمة': ['اضافة كريب جبنة شيدر', 'باكت بطاطس شيبسي'],
+  'كريب جبنة': ['اضافة كريب مشروم', 'باكت بطاطس شيبسي'],
+  'لقمة الونش': ['باكت بطاطس شيبسي', 'سلطة خضراء'],
+  'حواوشي ايطالي': ['سلطة خضراء', 'باكت بطاطس شيبسي'],
+  'مكرونة': ['سلطة خضراء', 'باكت عيش محمص']
+};
+
+const categories = [...new Set(MENU.map(i => i.category))];
+const normAr = s => String(s ?? '')
+  .replace(/[\u064B-\u0652\u0640]/g, '').replace(/[أإآ]/g, 'ا').replace(/ى/g, 'ي').replace(/ة/g, 'ه')
+  .replace(/\s+/g, ' ').trim().toLowerCase();
+const priceOf = i => i.sizes ? null : i.price;
+const fromPrice = i => i.sizes ? Math.min(...Object.values(i.sizes)) : i.price;
+
+function searchMenu(q) {
+  const words = normAr(q).split(' ').filter(Boolean);
+  if (!words.length) return [];
+  return MENU.filter(i => { const n = normAr(i.name); return words.every(w => n.includes(w)); });
+}
+function findOne(q) {
+  const n = normAr(q);
+  const exact = MENU.filter(i => normAr(i.name) === n);
+  if (exact.length === 1) return { item: exact[0] };
+  const found = exact.length ? exact : searchMenu(q);
+  if (found.length === 1) return { item: found[0] };
+  return { error: found.length ? 'ambiguous' : 'none', options: found.slice(0, 6).map(i => i.name) };
+}
+
+/* ------------------ الحالة والمخازن ------------------ */
+const PHONE = '+20100' + Math.floor(1000000 + Math.random() * 8999999);
+const APP = {
+  settings: {
+    accepting: true, closedOn: false,
+    closedMsg: 'المطعم مغلق حالياً، بنفتح من ٨ الصبح لحد ١٢ بالليل 🌛',
+    eta: 60, jamOn: false, jam: 30,
+    badWords: ['كلب', 'حمار', 'زبالة', 'خرا', 'قذر', 'غبي', 'x']
+  },
+  staff: [
+    { id: 'u1', name: 'صاحب المطعم', username: 'owner', password: 'owner', role: 'owner' },
+    { id: 'u2', name: 'أحمد', username: 'ahmed', password: '1234', role: 'manager' }
+  ],
+  orders: [],
+  feedback: [],
+  suspensions: {},
+  abuse: [],
+  seq: 100,
+  toolCalls: 0,
+  directReplies: 0
+};
+
+const ch = { chat: [], log: [], sent: 0 };
+const unauthorized = { session: null };
+let toastSeq = 0, toasts = [];
+
+const clock = () => new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const $ = id => document.getElementById(id);
+const money = n => n.toLocaleString('en-US');
+
+function toast(msg, kind) {
+  const id = ++toastSeq;
+  toasts.push({ id, msg, kind: kind || 'info' });
+  renderToasts();
+  setTimeout(() => { toasts = toasts.filter(x => x.id !== id); renderToasts(); }, 4500);
+}
+function renderToasts() {
+  $('toasts').innerHTML = toasts.map(x =>
+    '<div class="max-w-xs rounded-xl px-4 py-2 text-sm text-white shadow-soft ' +
+    (x.kind === 'error' ? 'bg-brand' : x.kind === 'warn' ? 'bg-gold-600' : 'bg-ink') + '">' + esc(x.msg) + '</div>').join('');
+}
+function logEvent(dir, label, json) {
+  ch.log.unshift({ dir, label, json, time: clock() });
+  ch.log = ch.log.slice(0, 24);
+}
+
+/* ------------------ محادثة العميل (جلسة مؤقتة) ------------------ */
+const sessions = new Map(); // مؤقتة: تتمسح مع إعادة التحميل ولا تُحفظ
+function session(phone) {
+  if (!sessions.has(phone)) {
+    sessions.set(phone, { phone, step: 'NEW', cart: [], pending: null, phoneNo: null, address: null, repeat: null, repeatN: 0, abuseN: 0 });
+  }
+  return sessions.get(phone);
+}
+
+function pushMsg(from, text, opts) {
+  ch.chat.forEach(m => (m.options = null));
+  ch.chat.push({ from, text, options: opts || null, time: clock() });
+}
+
+/* ------------------ الأدوات (نظير للسيرفر) ------------------ */
+function callTool(name, args) {
+  APP.toolCalls++;
+  logEvent('TOOL', name + '(' + JSON.stringify(args) + ')', { tool: name, args });
+  return TOOLS[name] ? TOOLS[name](args) : null;
+}
+const TOOLS = {
+  search_menu: ({ q }) => findOne(q),
+  add_to_cart: ({ s, name, size, qty }) => {
+    const r = findOne(name); if (r.error) return r;
+    const it = r.item; const price = it.sizes ? it.sizes[size] : it.price;
+    if (price == null) return { error: 'size' };
+    s.cart.push({ name: it.name, size: it.sizes ? size : '', price, qty });
+    return { ok: true, item: it.name, price, qty };
+  },
+  remove_item: ({ s, name }) => { s.cart = s.cart.filter(l => normAr(l.name) !== normAr(name)); return { ok: true }; },
+  set_qty: ({ s, name, qty }) => { const l = s.cart.find(l => normAr(l.name) === normAr(name)); if (l) l.qty = qty; return { ok: true }; },
+  recommend: ({ s }) => {
+    const have = new Set(s.cart.map(l => { const it = findOne(l.name).item; return it ? it.category : ''; }));
+    for (const cat of categories) {
+      if (!have.has(cat) && RECS[cat]) {
+        const cand = RECS[cat].map(nm => MENU.find(m => m.name === nm)).filter(Boolean)[0];
+        if (cand) return { item: cand.name, price: fromPrice(cand) };
+      }
+    }
+    return null;
+  },
+  get_eta: () => APP.settings.eta + (APP.settings.jamOn ? APP.settings.jam : 0),
+  place_order: ({ s }) => {
+    const o = {
+      id: ++APP.seq, phone: s.phoneNo, address: s.address,
+      lines: s.cart.map(l => ({ ...l })), status: 'PENDING', createdAt: clock(), day: new Date().toISOString().slice(0, 10)
+    };
+    o.subtotal = o.lines.reduce((a, l) => a + l.price * l.qty, 0);
+    APP.orders.unshift(o);
+    logEvent('DB', 'orders.insertOne', { id: o.id, total: o.subtotal, status: o.status });
+    return o;
+  }
+};
+
+/* ------------------ المساعد (محاكاة) ------------------ */
+/* ردود الكلام العادي — المساعد بيقرّر إنها مش محتاجة أدوات */
+function casualReply(text, q) {
+  if (/^(سلام|السلام عليكم|هاي|هاى|هلا|اهلا|اهلين|ازيك|ازيكو|صباح الخير|مساء الخير|صباحو|سلامو عليكو)/.test(q))
+    return 'وعليكم السلام يا فندم ✨ نورت مطعم الونش. تحب تطلب إيه النهاردة؟';
+  if (/شكرا|متشكر|تسلم|ربنا يكرمك|جزاك|تسلم ايدك/.test(q))
+    return 'العفو يا باشا 🧡 لو حابب تطلب حاجة تانية أنا موجود على طول.';
+  if (/بتفتح|بفتح|مواعيد|بتقفل|مفتوح امتى|مفتوحين|الساعات|معاد الفتح|الغلق/.test(q))
+    return 'إحنا بنفتح من ٨ الصبح لحد ١٢ بالليل كل يوم 🕑 تحب أجهّزلك حاجة؟';
+  if (/فين|مكانكو|مكانكم|عنوان المطعم|فرعكو|لوكيشن|موقعكو/.test(q))
+    return 'إحنا فرع واحد في «الونش» 🗺️ تحب تستلم من الفرع ولا تحب نوصّلك؟';
+  if (/بتوصلو|توصلو|توصيل|دليفري|دلفري/.test(q))
+    return 'أيوه بنوصّل 🚚 ابعتلي العنوان بعد ما تجهّز طلبك، والدفع كاش عند الاستلام.';
+  if (/عامل ايه|عاملين ايه|اخبارك|الدنيا ايه|كويس/.test(q))
+    return 'الدنيا تمام والحمد لله 😁 يلا نطلب حاجة حلوة، عندنا فول وفلافل وبيتزا لذيذة.';
+  if (/^(تمام|ماشي|اوكي|اوك|طيب|حلو|جميل)$/.test(q))
+    return 'تمام يا فندم 👏 اقترح عليك «فول» أو «بيتزا مارجريتا» — تحب نبدأ بأنهي؟';
+  return null;
+}
+function agent(text) {
+  const s = session(PHONE);
+  const q = normAr(text);
+
+  // إيقاف مؤقت بسبب الإساءة
+  const until = APP.suspensions[PHONE];
+  if (until && Date.now() < until) {
+    pushMsg('bot', 'المحادثة متوقفة شويّة 🤲 جرّب تاني بعد شويّة، أو تواصل مع المطعم مباشرة.');
+    return;
+  }
+
+  // كشف الإساءة
+  const hit = APP.settings.badWords.find(w => q.includes(normAr(w)));
+  if (hit) {
+    s.abuseN++;
+    APP.abuse.push({ phone: PHONE, word: hit, at: clock(), step: s.abuseN });
+    logEvent('DB', 'abuse_flags.insertOne', { phone: PHONE, word: hit, level: s.abuseN });
+    if (s.abuseN >= 2) {
+      APP.suspensions[PHONE] = Date.now() + 15 * 60 * 1000;
+      pushMsg('bot', 'هدّي أعصابك يا فندم 🤲 هنوقف المحادثة مؤقتاً ١٥ دقيقة. لو محتاج مساعدة كلّم المطعم.');
+      notify('abuse', 'إساءة متكرّرة من العميل ' + PHONE + ' — تم إيقاف المحادثة ١٥ دقيقة');
+    } else {
+      pushMsg('bot', 'بلاش الألفاظ دي يا فندم 🤲 أقدر أساعدك في الأوردر بس.');
+      notify('abuse', 'تنبيه: لفظ مسيء من العميل ' + PHONE);
+    }
+    return;
+  }
+
+  // مواعيد مغلقة
+  if (APP.settings.closedOn) { pushMsg('bot', APP.settings.closedMsg); return; }
+  if (!APP.settings.accepting) { pushMsg('bot', 'المطعم مش بيستقبل أوردرات دلوقتي 🤲 جرّب بعد شويّة.'); return; }
+
+  // خارج النطاق / محاولات لخبطة
+  if (/ignore|system|prompt|قاعدة|نظام|اوامر/.test(q) || /سياسة|هكر|password|كلمة السر/.test(q)) {
+    pushMsg('bot', 'أنا هنا أساعدك في أوردر من الونش بس ☺️ تحب تشوف القايمة؟');
+    return;
+  }
+
+  // ===== قرار المساعد: يرد عادي (بدون أدوات) ولا ينادي أداة؟ =====
+  // القرار قرار الموديل نفسه — هنا بنحاكيه. الكلام العادي مابيلمسش أي بيانات.
+  if (!/^(ASK_PHONE|ASK_ADDR|CONFIRM)$/.test(s.step)) {
+    const reply = casualReply(text, q);
+    if (reply) {
+      APP.directReplies++;
+      logEvent('THINK', 'قرّر: رد مباشر (من غير أدوات)', { text, tool: null });
+      pushMsg('bot', reply);
+      return;
+    }
+  }
+
+  // مراحل الخروج
+  if (s.step === 'ASK_PHONE') {
+    const digits = (text.match(/\d/g) || []).join('');
+    if (digits.length >= 8) { s.phoneNo = text.trim(); s.step = 'ASK_ADDR'; pushMsg('bot', 'تمام 👍 ابعتلي العنوان بالتفصيل (الشارع والعلامة المميزة).'); }
+    else pushMsg('bot', 'محتاج رقم موبايل صحيح يا فندم 📞');
+    return;
+  }
+  if (s.step === 'ASK_ADDR') {
+    if (text.trim().length < 5) { pushMsg('bot', 'اكتب العنوان بالتفصيل شوية يا فندم 😊'); return; }
+    s.address = text.trim(); s.step = 'CONFIRM';
+    const eta = callTool('get_eta');
+    const sub = s.cart.reduce((a, l) => a + l.price * l.qty, 0);
+    const linesTxt = s.cart.map(l => l.qty + ' × ' + l.name + (l.size ? ' (' + l.size + ')' : '')).join('\n');
+    pushMsg('bot',
+      'تمام يا فندم 👍 طلبك:\n' + linesTxt +
+      '\nإجمالي الأصناف: ' + money(sub) + ' جنيه' +
+      '\n+ التوصيل ودفع عند الاستلام 💰' +
+      '\nالأوردر هيوصلك خلال ~' + eta + ' دقيقة.' +
+      (APP.settings.jamOn ? '\n(في زحمة بسيطة، شكراً لصبرك 🤲)' : '') +
+      '\n\nنأكد الطلب؟',
+      [{ id: 'confirm', title: 'أكد الطلب' }, { id: 'edit', title: 'تعديل' }]);
+    return;
+  }
+  if (s.step === 'CONFIRM' && (q.includes('اكد') || q.includes('ايوه') || q.includes('تمام') || q.includes('ماشي') || q.includes('اه'))) {
+    const o = callTool('place_order', { s });
+    pushMsg('bot', 'وصلك للمطعم يا باشا ✔️ استلمنا أوردرك رقم #' + o.id + '، وهنقولك أول ما يبدأ التحضير.');
+    notify('new', 'أوردر جديد #' + o.id + ' من ' + PHONE);
+    resetSession(s, true);
+    renderAll();
+    return;
+  }
+  if (s.step === 'CONFIRM' && q.includes('تعديل')) {
+    s.step = 'ORDERING'; pushMsg('bot', 'تحب تعدّل إيه؟ اكتب الصنف تاني أو قول «شيل» متبوع بالاسم.');
+    return;
+  }
+
+  // اختيار محدد من أزرار
+  if (/^(confirm|edit|reco|more|checkout|cancel)$/.test(q)) {
+    if (q === 'checkout' || q === 'more') { startCheckout(s); return; }
+    if (q === 'reco' && s._rec) { addItem(s, s._rec.name, s._rec.size || Object.keys(MENU.find(m => m.name === s._rec.name).sizes || {})[0], 1); }
+    return;
+  }
+
+  // شيل صنف
+  if (q.startsWith('شيل')) {
+    const nm = text.replace('شيل', '').trim();
+    if (nm) { callTool('remove_item', { s, name: nm }); pushMsg('bot', 'شيلت «' + nm + '» من السلة.'); if (s.cart.length) showCart(s); else pushMsg('bot', 'السلة فاضية. تحب تشوف القايمة؟'); }
+    return;
+  }
+  // خلصت / خروج
+  if (/خلصت|كده كفايه|كده كفاية|اطلب|اوردر|الدفع|خلاص|تمام كده|checkout/.test(q) && s.cart.length) { startCheckout(s); return; }
+
+  // قايمة
+  if (/قايمه|قائمة|منيو|menu|اكتب|اطلب|عايز اكل|جيب/.test(q) && !searchMenu(text).length) {
+    pushMsg('bot', 'أهلاً بيك في الونش 🙋 عندنا: ' + categories.slice(0, 8).join(' · ') + ' …\nاكتب اسم الأكلة وأنا أضيفها.');
+    return;
+  }
+
+  // قرار المساعد: ده إجراء — ينادي أداة
+  logEvent('THINK', 'قرّر: ينادي أداة (إجراء طلب)', { text, tool: 'search_menu' });
+  const r = callTool('search_menu', { q: text });
+  if (r.item) { askItem(s, r.item); return; }
+  if (r.error === 'ambiguous') {
+    pushMsg('bot', 'تقصد أنهي واحد؟ ' + r.options.join(' / '));
+    return;
+  }
+
+  // افتراضي: ترحيب
+  pushMsg('bot', 'أهلاً بيك في مطعم الونش 🙋 تحب تطلب إيه النهاردة؟ اكتب مثلاً «فول» أو «بيتزا مارجريتا».');
+}
+
+function askItem(s, it) {
+  s.pending = it;
+  if (it.sizes) {
+    const sizes = Object.keys(it.sizes);
+    pushMsg('bot', '(' + it.name + ') عندنا ' + sizes.map(z => z + ' ' + it.sizes[z] + 'ج').join(' / ') + ' — تحب أنهي حجم؟',
+      sizes.map(z => ({ id: 'size:' + z, title: z })));
+  } else {
+    addItem(s, it.name, '', 1);
+  }
+}
+function addItem(s, name, size, qty) {
+  const res = callTool('add_to_cart', { s, name, size, qty });
+  if (res.error) { pushMsg('bot', 'مش لاقي الصنف ده 🤲 جرّب تكتبه بشكل تاني.'); return; }
+  const rec = callTool('recommend', { s });
+  s._rec = rec;
+  showCart(s, rec);
+}
+function showCart(s, rec) {
+  const sub = s.cart.reduce((a, l) => a + l.price * l.qty, 0);
+  const txt = s.cart.map(l => l.qty + ' × ' + l.name + (l.size ? ' (' + l.size + ')' : '')).join('\n');
+  let msg = 'تمام، سلتك:\n' + txt + '\nإجمالي الأصناف: ' + money(sub) + ' جنيه';
+  const opts = [{ id: 'more', title: 'أكمل الطلب' }];
+  if (rec) { msg += '\n\nتحب نضيف ' + rec.item + '؟ (' + rec.price + ' ج)'; opts.unshift({ id: 'reco', title: 'أضف ' + rec.item.slice(0, 12) }); }
+  pushMsg('bot', msg, opts);
+}
+function startCheckout(s) {
+  s.step = 'ASK_PHONE';
+  pushMsg('bot', 'تمام 😊 محتاج رقم الموبايل للتوصيل؟');
+}
+
+function resetSession(s, done) {
+  sessions.delete(s.phone);
+}
+
+/* ------------------ الإشعارات للمطبخ ------------------ */
+function notify(kind, msg) {
+  if (!unauthorized.session && kind !== 'none') {
+    // ما حدش داخل، نخزّنها كتنبيه مؤقت
+    logEvent('OUT', 'notify (المطبخ مفتوح ولا لأ?)', { kind, msg });
+  }
+  if (kind === 'new' || kind === 'abuse' || kind === 'feedback') toast(msg, kind === 'new' ? 'info' : 'warn');
+  renderAll();
+}
+
+/* ------------------ الحساب ------------------ */
+function login(username, password) {
+  const u = APP.staff.find(s => s.username === username && s.password === password);
+  if (!u) { unauthorized.flash = 'اسم المستخدم أو كلمة السر غلط'; return false; }
+  unauthorized.session = u; unauthorized.flash = null; return true;
+}
+function isOwner() { return unauthorized.session && unauthorized.session.role === 'owner'; }
+function isManager() { return !!unauthorized.session; }
+
+/* ------------------ العرض ------------------ */
+function renderChat() {
+  $('chat').innerHTML = ch.chat.map(m => {
+    const mine = m.from === 'user';
+    const cls = mine ? 'ml-auto bg-[#DCF8C6] bubble-out' : 'bg-white bubble-in';
+    const opts = m.options ? '<div class="mt-2 space-y-1">' + m.options.map(o =>
+      '<button data-opt="' + esc(o.title) + '" class="block w-full rounded-xl border border-brand/30 bg-white px-3 py-1.5 text-xs font-bold text-brand hover:bg-brand-50">' + esc(o.title) + '</button>').join('') + '</div>' : '';
+    return '<div class="max-w-[85%] rounded-2xl px-3 py-2 text-sm shadow-sm ' + cls + '">' +
+      '<p class="whitespace-pre-line leading-relaxed">' + esc(m.text) + '</p>' + opts +
+      '<p class="mt-1 text-left text-[10px] text-muted">' + m.time + '</p></div>';
+  }).join('');
+  $('chat').scrollTop = $('chat').scrollHeight;
+  $('directCount').textContent = APP.directReplies;
+  $('toolCount').textContent = APP.toolCalls;
+}
+function renderLogin() {
+  if (unauthorized.session) { $('loginBox').classList.add('hidden'); $('dash').classList.remove('hidden'); return; }
+  $('loginBox').classList.remove('hidden'); $('dash').classList.add('hidden');
+  $('loginBox').innerHTML =
+    '<form data-login class="space-y-3">' +
+    '<h3 class="font-bold text-brand">دخول لوحة الونش</h3>' +
+    '<p class="text-xs text-muted">أدخل باسم المستخدم وكلمة السر. ' +
+    'جرّب: <b class="font-mono">owner / owner</b> (مالك) أو <b class="font-mono">ahmed / 1234</b> (مدير).</p>' +
+    (unauthorized.flash ? '<p class="text-xs font-bold text-brand">' + esc(unauthorized.flash) + '</p>' : '') +
+    '<div class="flex flex-wrap gap-2">' +
+    '<input data-keep="lu" placeholder="اسم المستخدم" class="min-w-0 flex-1 rounded-lg border border-sand-200 px-3 py-2 text-sm">' +
+    '<input data-keep="lp" type="password" placeholder="كلمة السر" class="min-w-0 flex-1 rounded-lg border border-sand-200 px-3 py-2 text-sm">' +
+    '</div><button class="rounded-lg bg-brand px-4 py-2 text-sm font-bold text-white hover:bg-brand-700">دخول</button></form>';
+}
+function renderStaff() {
+  if (!isOwner()) { $('staffBox').innerHTML = '<p class="text-xs text-muted">إدارة الموظفين للمالك فقط.</p>'; return; }
+  $('staffBox').innerHTML = APP.staff.map(u =>
+    '<div class="flex items-center gap-2 rounded-lg bg-sand-50 px-3 py-2 text-sm">' +
+    '<b>' + esc(u.name) + '</b> <span class="text-xs text-muted">@' + esc(u.username) + ' · ' + (u.role === 'owner' ? 'مالك' : 'مدير') + '</span>' +
+    '<span class="mr-auto"></span>' +
+    (u.role !== 'owner' ? '<button data-reset="' + u.id + '" class="rounded-full border border-sand-200 px-2 py-1 text-xs hover:bg-white">تغيير كلمة السر</button>' : '') +
+    '</div>').join('');
+}
+function renderOrders() {
+  const list = APP.orders;
+  $('ordersBox').innerHTML = list.length ? list.map(o =>
+    '<div class="p-4">' +
+    '<div class="flex items-center justify-between gap-2"><p class="font-bold">#' + o.id +
+    ' <span class="chip px-2 py-0.5 text-xs ' +
+    (o.status === 'PENDING' ? 'bg-gold-100 text-gold-700' : o.status === 'PREPARING' ? 'bg-brand-50 text-brand' : 'bg-sand-100 text-muted') + '">' +
+    (o.status === 'PENDING' ? 'انتظار الإدارة' : o.status === 'PREPARING' ? 'جاري التحضير' : 'اتسلّم') + '</span></p>' +
+    '<p class="text-sm font-bold text-brand">' + money(o.subtotal) + ' جنيه</p></div>' +
+    '<p class="mt-1 text-xs text-muted" dir="ltr">' + esc(o.phone) + '</p>' +
+    '<ul class="mt-2 text-sm">' + o.lines.map(l => '<li>' + l.qty + ' × ' + esc(l.name) + (l.size ? ' (' + esc(l.size) + ')' : '') + '</li>').join('') + '</ul>' +
+    '<p class="mt-1 text-xs text-muted">🗺️ ' + esc(o.address) + '</p>' +
+    (o.status === 'PENDING' ? '<button data-confirm="' + o.id + '" class="mt-3 rounded-lg bg-brand px-4 py-1.5 text-sm font-bold text-white hover:bg-brand-700">تأكيد الأوردر</button>' :
+     o.status === 'PREPARING' ? '<button data-deliver="' + o.id + '" class="mt-3 rounded-lg bg-ink px-4 py-1.5 text-sm font-bold text-white hover:bg-ink-700">اتسلّم</button>' : '') +
+    '</div>').join('') : '<p class="p-6 text-sm text-muted">مفيش أوردرات لسه. اطلب من الموبايل.</p>';
+  $('botState').textContent = APP.settings.closedOn ? 'مغلق' : (APP.settings.accepting ? 'يستقبل أوردرات' : 'موقوف');
+  $('botState').className = 'chip px-3 py-1 text-xs font-bold ' + (APP.settings.closedOn || !APP.settings.accepting ? 'bg-sand-100 text-muted' : 'bg-brand-50 text-brand');
+}
+function renderLog() {
+  const box = $('log'); if (!box) return;
+  const color = { IN: 'text-emerald-400', OUT: 'text-sky-400', THINK: 'text-amber-300', TOOL: 'text-gold', DB: 'text-fuchsia-400' };
+  const arrow = { IN: ' ← IN ', OUT: ' → OUT ', THINK: ' 🧠 THINK ', TOOL: ' ⚙ TOOL ', DB: ' 💾 DB ' };
+  box.innerHTML = ch.log.map(e =>
+    '<div><p class="' + (color[e.dir] || 'text-white') + '">' + e.time + (arrow[e.dir] || '') + esc(e.label) + '</p>' +
+    '<pre class="mt-1 overflow-x-auto whitespace-pre-wrap text-white/70">' + esc(JSON.stringify(e.json)) + '</pre></div>').join('') ||
+    '<p class="text-white/40">في انتظار أول رسالة…</p>';
+}
+function renderAll() {
+  renderChat(); renderLogin(); renderLog();
+  if (unauthorized.session) { $('whoami').textContent = unauthorized.session.name; renderOrders(); renderStaff(); }
+}
+
+/* ------------------ أحداث الموبايل ------------------ */
+function userSays(text) {
+  logEvent('IN', 'POST /webhook', { from: PHONE, text });
+  ch.chat.forEach(m => (m.options = null));
+  ch.chat.push({ from: 'user', text, time: clock() });
+  agent(text);
+  renderAll();
+}
+$('chatForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const v = $('chatInput').value.trim(); if (!v) return;
+  $('chatInput').value = ''; userSays(v);
+});
+document.addEventListener('click', e => {
+  const opt = e.target.closest('[data-opt]');
+  if (opt) { const s = session(PHONE); const t = opt.dataset.opt; userSays(t); return; }
+  const ui = e.target.closest('[data-ui]');
+  if (ui) { if (ui.dataset.ui === 'signout') { unauthorized.session = null; renderAll(); } if (ui.dataset.ui === 'lang') toast('النسخة العربية هي الأساسية 😊'); return; }
+  const cf = e.target.closest('[data-confirm]');
+  if (cf) {
+    const o = APP.orders.find(x => x.id === Number(cf.dataset.confirm));
+    if (o) { o.status = 'PREPARING'; logEvent('DB', 'orders.update (PREPARING)', { id: o.id });
+      pushMsg('bot', 'أوردرك رقم #' + o.id + ' بدأ التحضير 🍳 مستنينك يا باشا!');
+      toast('الأوردر #' + o.id + ' بدأ التحضير'); renderAll(); }
+    return;
+  }
+  const dv = e.target.closest('[data-deliver]');
+  if (dv) {
+    const o = APP.orders.find(x => x.id === Number(dv.dataset.deliver));
+    if (o) { o.status = 'DELIVERED'; logEvent('DB', 'orders.update (DELIVERED)', { id: o.id });
+      toast('الأوردر #' + o.id + ' اتسلّم — هيبعت تقييم بعد ساعتين'); renderAll();
+      setTimeout(() => feedbackPrompt(o), 2500); }
+    return;
+  }
+  const rs = e.target.closest('[data-reset]');
+  if (rs) {
+    const u = APP.staff.find(s => s.id === rs.dataset.reset);
+    if (u) { u.password = Math.random().toString(36).slice(2, 6); logEvent('DB', 'staff.update (password reset)', { id: u.id });
+      toast('كلمة السر الجديدة للمدير ' + u.name + ': ' + u.password); renderStaff(); }
+    return;
+  }
+});
+document.addEventListener('submit', e => {
+  if (e.target.closest('[data-login]')) {
+    e.preventDefault();
+    login(document.querySelector('[data-keep="lu"]').value, document.querySelector('[data-keep="lp"]').value);
+    renderAll(); return;
+  }
+  if (e.target.closest('[data-staffform]')) {
+    e.preventDefault();
+    const name = document.querySelector('[data-keep="sfName"]').value.trim();
+    const usr = document.querySelector('[data-keep="sfUser"]').value.trim();
+    const pwd = document.querySelector('[data-keep="sfPass"]').value.trim();
+    if (!name || !usr || !pwd) { toast('اكمل بيانات المدير', 'error'); return; }
+    if (APP.staff.some(s => s.username === usr)) { toast('اسم المستخدم مستخدم بالفعل', 'error'); return; }
+    APP.staff.push({ id: 'u' + (APP.staff.length + 1), name, username: usr, password: pwd, role: 'manager' });
+    logEvent('DB', 'staff.insertOne', { name, username: usr, role: 'manager' });
+    document.querySelector('[data-keep="sfName"]').value = '';
+    document.querySelector('[data-keep="sfUser"]').value = '';
+    document.querySelector('[data-keep="sfPass"]').value = '';
+    toast('تم إنشاء حساب المدير ' + name); renderStaff(); return;
+  }
+});
+document.addEventListener('change', e => {
+  const s = e.target.closest('[data-set]');
+  if (s) {
+    const k = s.dataset.set;
+    if (k === 'jamOn') APP.settings.jamOn = s.checked;
+    if (k === 'jam') APP.settings.jam = Number(s.value) || 0;
+    if (k === 'eta') APP.settings.eta = Number(s.value) || 60;
+    if (k === 'closedOn') APP.settings.closedOn = s.checked;
+    if (k === 'accepting') APP.settings.accepting = s.checked;
+    $('setNote').textContent = 'محفوظ ✓ وقت الوصول الحالي: ' + (APP.settings.eta + (APP.settings.jamOn ? APP.settings.jam : 0)) + ' دقيقة';
+    renderOrders(); return;
+  }
+  const cm = e.target.closest('[data-set="closedMsg"]');
+  if (cm) APP.settings.closedMsg = cm.value;
+});
+document.addEventListener('input', e => {
+  const cm = e.target.closest('[data-set="closedMsg"]');
+  if (cm) APP.settings.closedMsg = cm.value;
+});
+
+/* سرعة الاختصار */
+const QUICK = ['فول', 'فلافل', 'بيتزا مارجريتا', 'كريب الونش', 'خلصت'];
+$('quickBtns').innerHTML = QUICK.map(t => '<button data-opt="' + esc(t) + '" class="chip border border-brand/25 bg-white px-3 py-1 text-xs font-bold text-brand hover:bg-brand-50">' + esc(t) + '</button>').join('');
+
+/* ------------------ التقييم ------------------ */
+let feedbackState = null;
+function feedbackPrompt(o) {
+  feedbackState = { order: o, step: 'rating' };
+  pushMsg('bot', 'يا رب تكون الأكلة عجبتك 🥰\nقيّمنا من ١ لـ ٥ (اكتب رقم)، واكتب رأيك لو حابب.');
+  renderAll();
+}
+// نلتقط رد التقييم قبل منطق الأوردر
+const _agent = agent;
+agent = function (text) {
+  if (feedbackState) {
+    const q = normAr(text);
+    if (feedbackState.step === 'rating') {
+      const n = parseInt((text.match(/[1-5]/) || [])[0], 10);
+      if (n) { feedbackState.rating = n; feedbackState.step = 'comment'; pushMsg('bot', 'شكراً ✨ اكتب رأيك أو قول «تم».'); return; }
+      pushMsg('bot', 'اختار رقم من ١ لـ ٥ 🤲'); return;
+    }
+    if (feedbackState.step === 'comment') {
+      const bad = APP.settings.badWords.find(w => q.includes(normAr(w)));
+      const entry = { order: feedbackState.order.id, rating: feedbackState.rating, comment: text, at: clock(), flagged: !!bad };
+      APP.feedback.push(entry); logEvent('DB', 'feedback.insertOne', entry);
+      if (bad) { notify('feedback', 'تقييم فيه كلام مسيء من العميل — إبلاغ المدير والمالك'); }
+      pushMsg('bot', 'شكراً لتقييمك 🧡 رأيك بيهمنا جداً.');
+      feedbackState = null; renderAll(); return;
+    }
+  }
+  return _agent(text);
+};
+
+/* ======================= المخططات والمحتوى الثابت ======================= */
+/* رحلة الأوردر */
+const FLOW = [
+  { lane: 'c', n: 1, t: 'العميل يبدأ الشات', d: 'يكتب «سلام» أو «عايز أطلب» على واتساب الونش.' },
+  { lane: 'c', n: 2, t: 'المساعد يجهّز الأوردر', d: 'يدوّر على الأصناف، يضيف للسلة، ويقترح إضافة مناسبة.' },
+  { lane: 'c', n: 3, t: 'الرقم والعنوان', d: 'قبل الخروج، المساعد يطلب رقم الموبايل والعنوان كل مرة.' },
+  { lane: 'c', n: 4, t: 'السعر والوقت والتأكيد', d: '«إجمالي الأصناف + التوصيل ودفع عند الاستلام + الوقت». العميل يأكد.' },
+  { lane: 's', n: 5, t: 'إشعار اتجاه واحد للمطبخ', d: 'الأوردر والإجمالي يوصلوا للمطبخ فوراً — من غير انتظار رد.' },
+  { lane: 'a', n: 6, t: 'المدير يأكد الأوردر', d: 'من اللوحة، زرار «تأكيد الأوردر».' },
+  { lane: 'a', n: 7, t: 'رسالة «جاري التحضير»', d: 'العميل يستلم رسالة ودّية إن الأوردر بدأ التحضير. (المرحلة الوحيدة بعد التأكيد).' },
+  { lane: 'a', n: 8, t: 'المطبخ يحضّر ويعلّم «اتسلّم»', d: 'المدير يدوّس «اتسلّم» بعد التسليم.' },
+  { lane: 's', n: 9, t: 'رسالة تقييم بعد ساعتين', d: 'المساعد يسأل العميل عن الخدمة ويحفظ التقييم.' }
+];
+const LANE = {
+  c: { tag: 'العميل', card: 'border-brand/30 bg-brand-50', badge: 'bg-brand' },
+  s: { tag: 'المساعد/السيرفر', card: 'border-sand-200 bg-white', badge: 'bg-ink' },
+  a: { tag: 'المطبخ/الإدارة', card: 'border-gold bg-gold-100', badge: 'bg-gold-600' }
+};
+$('flowChart').innerHTML = FLOW.map((f, i) => {
+  const L = LANE[f.lane];
+  const card = '<div class="rounded-2xl border p-4 shadow-soft ' + L.card + '">' +
+    '<div class="flex items-center gap-2"><span class="step-dot flex items-center justify-center rounded-full text-sm font-black text-white ' + L.badge + '">' + f.n + '</span>' +
+    '<p class="font-bold">' + f.t + '</p>' +
+    '<span class="mr-auto rounded-full px-2 py-0.5 text-[10px] font-bold text-white ' + L.badge + '">' + L.tag + '</span></div>' +
+    '<p class="mt-2 text-sm text-muted">' + f.d + '</p></div>';
+  const arrow = i < FLOW.length - 1 ? '<div class="flex justify-center py-1 text-2xl font-black leading-none text-brand">↓</div>' : '';
+  return card + arrow;
+}).join('');
+
+/* التقارير */
+const REV = [4200, 5100, 4800, 6200, 7100, 6800, 7900];
+const CATS = ['بيتزا', 'كريب', 'فول', 'فلافل', 'مكرونة', 'حواوشي', 'علب'];
+const TOP = [['بيتزا مارجريتا', 42], ['فول', 38], ['كريب الونش', 31], ['فلافل', 27], ['بيتزا رانش فراخ', 22], ['مكرونة نجرسكو', 18]];
+function drawCharts() {
+  if (typeof Chart === 'undefined') return;
+  const grid = '#ECE4DB', text = '#6E5A55';
+  Chart.defaults.font.family = 'Cairo';
+  Chart.defaults.color = text;
+  const t = $('chartTrend'), m = $('chartMix'), it = $('chartItems');
+  if (t && !t._c) t._c = new Chart(t, { type: 'line', data: { labels: ['السبت','الأحد','الاتنين','التلات','الأربع','الخميس','الجمعة'],
+    datasets: [{ label: 'البيع (ج.م)', data: REV, borderColor: '#B01414', backgroundColor: 'rgba(176,20,20,.12)', fill: true, tension: .35, pointBackgroundColor: '#F0B050' }] },
+    options: { plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: grid } } } } });
+  if (m && !m._c) m._c = new Chart(m, { type: 'doughnut', data: { labels: CATS, datasets: [{ data: [30,22,18,12,9,6,3], backgroundColor: ['#B01414','#C21818','#8F0F0F','#F0B050','#D99A3C','#B87F28','#E7DFD6'] }] },
+    options: { plugins: { legend: { position: 'bottom', labels: { boxWidth: 12 } } } } });
+  if (it && !it._c) it._c = new Chart(it, { type: 'bar', data: { labels: TOP.map(x => x[0]), datasets: [{ label: 'عدد الأوردرات', data: TOP.map(x => x[1]), backgroundColor: '#B01414', borderRadius: 8 }] },
+    options: { plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: grid } } } } });
+}
+setTimeout(drawCharts, 300);
+
+/* تمييز القسم الظاهر في الشريط العلوي */
+(function () {
+  const links = [...document.querySelectorAll('nav a[href^="#"]')];
+  const setActive = id => links.forEach(a => a.classList.toggle('is-active', a.getAttribute('href') === '#' + id));
+  const secs = links.map(a => document.getElementById(a.getAttribute('href').slice(1))).filter(Boolean);
+  if ('IntersectionObserver' in window) {
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) setActive(e.target.id); });
+    }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+    secs.forEach(s => obs.observe(s));
+  }
+  links.forEach(a => a.addEventListener('click', () => setActive(a.getAttribute('href').slice(1))));
+})();
+
+/* بطاقات الأرقام */
+$('kpiOrders').textContent = '128';
+$('kpiRevenue').textContent = money(REV.reduce((a, b) => a + b, 0)) + ' ج';
+$('kpiAvg').textContent = '247 ج';
+$('kpiRating').textContent = '4.6 🌟';
+
+/* ======================= البداية ======================= */
+logEvent('OUT', 'GET /webhook (تحقق)', { status: 'verified' });
+pushMsg('bot', 'أهلاً بيك في مطعم الونش 🙋 تحب تطلب إيه النهاردة؟ اكتب «فول» أو «بيتزا مارجريتا».');
+renderAll();
+</script>
+</body>
+</html>
